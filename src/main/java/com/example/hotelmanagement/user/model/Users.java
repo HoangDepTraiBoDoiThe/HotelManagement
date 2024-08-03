@@ -2,7 +2,6 @@ package com.example.hotelmanagement.user.model;
 
 import com.example.hotelmanagement.role.model.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,12 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@Entity
+public class Users {
     @Id
     @GeneratedValue
     private long id;
 
-    @Email
     private String name;
     private String email;
     private String password;
