@@ -1,30 +1,38 @@
 package com.example.hotelmanagement.helper;
 
 import com.example.hotelmanagement.role.exception.RoleException;
+import com.example.hotelmanagement.user.exception.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice
-public class Handler {
+class Handler {
     String notfoundMessage= "Resource not found: %s";
     @ExceptionHandler(RoleException.class)
-    public ResponseEntity<?> handleRoleNotFoundException(String message, WebRequest webRequest) {
-        ExceptionData exceptionData = new ExceptionData(String.format(notfoundMessage, message), webRequest.getDescription(true));
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ResponseEntity<?> handleRoleNotFoundException(RoleException ex, WebRequest webRequest) {
+        String errorMessage = ex.getMessage();
+        ExceptionData exceptionData = new ExceptionData(String.format(notfoundMessage, errorMessage), webRequest.getDescription(false));
         return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RoleException.class)
-    public ResponseEntity<?> handleUserNotFoundException(String message, WebRequest webRequest) {
-        ExceptionData exceptionData = new ExceptionData(String.format(notfoundMessage, message), webRequest.getDescription(true));
+    @ExceptionHandler(UserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ResponseEntity<?> handleUserNotFoundException(Exception ex, WebRequest webRequest) {
+        String errorMessage = ex.getMessage();
+        ExceptionData exceptionData = new ExceptionData(String.format(notfoundMessage, errorMessage), webRequest.getDescription(false));
         return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleOtherException(String message, WebRequest webRequest) {
-        ExceptionData exceptionData = new ExceptionData(String.format("My message - Internal exception: %s", message), webRequest.getDescription(true));
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    ResponseEntity<?> handleOtherException(Exception ex, WebRequest webRequest) {
+        String errorMessage = ex.getMessage();
+        ExceptionData exceptionData = new ExceptionData(String.format("My message - Internal exception: %s", errorMessage), webRequest.getDescription(false));
         return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
     }
 }
