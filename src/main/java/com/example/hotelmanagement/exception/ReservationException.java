@@ -1,4 +1,4 @@
-package com.example.hotelmanagement.reservation.exception;
+package com.example.hotelmanagement.exception;
 
 public class ReservationException extends RuntimeException {
     public ReservationException(String message) {

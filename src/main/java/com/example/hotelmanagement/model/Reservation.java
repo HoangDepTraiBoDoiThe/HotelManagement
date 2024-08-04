@@ -1,4 +1,4 @@
-package com.example.hotelmanagement.reservation.model;
+package com.example.hotelmanagement.model;
 
 import com.example.hotelmanagement.model.Room;
 import com.example.hotelmanagement.model.User;

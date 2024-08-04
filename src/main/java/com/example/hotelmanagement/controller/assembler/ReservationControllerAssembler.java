@@ -1,8 +1,8 @@
-package com.example.hotelmanagement.reservation.controller.assembler;
+package com.example.hotelmanagement.controller.assembler;
 
-import com.example.hotelmanagement.reservation.controller.ReservationController;
-import com.example.hotelmanagement.reservation.dto.response.ReservationResponse;
-import com.example.hotelmanagement.reservation.model.Reservation;
+import com.example.hotelmanagement.dto.response.ReservationResponse;
+import com.example.hotelmanagement.controller.ReservationController;
+import com.example.hotelmanagement.model.Reservation;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;

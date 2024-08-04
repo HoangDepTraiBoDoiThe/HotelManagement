@@ -1,6 +1,6 @@
 package com.example.hotelmanagement.helper;
 
-import com.example.hotelmanagement.reservation.exception.ReservationException;
+import com.example.hotelmanagement.exception.ReservationException;
 import com.example.hotelmanagement.exception.RoleException;
 import com.example.hotelmanagement.exception.UserException;
 import org.springframework.http.HttpStatus;

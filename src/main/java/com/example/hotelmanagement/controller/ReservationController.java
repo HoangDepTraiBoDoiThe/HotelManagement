@@ -1,10 +1,10 @@
-package com.example.hotelmanagement.reservation.controller;
+package com.example.hotelmanagement.controller;
 
-import com.example.hotelmanagement.reservation.controller.assembler.ReservationControllerAssembler;
-import com.example.hotelmanagement.reservation.dto.request.ReservationRequest;
-import com.example.hotelmanagement.reservation.dto.response.ReservationResponse;
-import com.example.hotelmanagement.reservation.model.Reservation;
-import com.example.hotelmanagement.reservation.service.ReservationService;
+import com.example.hotelmanagement.controller.assembler.ReservationControllerAssembler;
+import com.example.hotelmanagement.dto.response.ReservationResponse;
+import com.example.hotelmanagement.model.Reservation;
+import com.example.hotelmanagement.dto.request.ReservationRequest;
+import com.example.hotelmanagement.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;

@@ -1,9 +1,9 @@
-package com.example.hotelmanagement.reservation.service;
+package com.example.hotelmanagement.service;
 
-import com.example.hotelmanagement.reservation.dto.request.ReservationRequest;
-import com.example.hotelmanagement.reservation.exception.ReservationException;
-import com.example.hotelmanagement.reservation.model.Reservation;
-import com.example.hotelmanagement.reservation.model.repository.ReservationRepository;
+import com.example.hotelmanagement.model.Reservation;
+import com.example.hotelmanagement.dto.request.ReservationRequest;
+import com.example.hotelmanagement.exception.ReservationException;
+import com.example.hotelmanagement.model.repository.ReservationRepository;
 import com.example.hotelmanagement.exception.UserException;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
