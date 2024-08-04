@@ -4,9 +4,9 @@ import com.example.hotelmanagement.reservation.dto.request.ReservationRequest;
 import com.example.hotelmanagement.reservation.exception.ReservationException;
 import com.example.hotelmanagement.reservation.model.Reservation;
 import com.example.hotelmanagement.reservation.model.repository.ReservationRepository;
-import com.example.hotelmanagement.user.exception.UserException;
-import com.example.hotelmanagement.user.model.User;
-import com.example.hotelmanagement.user.model.repository.UserRepository;
+import com.example.hotelmanagement.exception.UserException;
+import com.example.hotelmanagement.model.User;
+import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

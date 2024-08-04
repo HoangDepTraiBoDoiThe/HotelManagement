@@ -1,7 +1,7 @@
 package com.example.hotelmanagement.reservation.model;
 
-import com.example.hotelmanagement.room.model.Room;
-import com.example.hotelmanagement.user.model.User;
+import com.example.hotelmanagement.model.Room;
+import com.example.hotelmanagement.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
