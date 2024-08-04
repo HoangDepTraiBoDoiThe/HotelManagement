@@ -21,6 +21,10 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
     }
 
+    public User createUser(User newUser) {
+        return userRepository.save(newUser);
+    }
+    
     public User updateUser(long id, User newUserData) {
         User existingUser = userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
 

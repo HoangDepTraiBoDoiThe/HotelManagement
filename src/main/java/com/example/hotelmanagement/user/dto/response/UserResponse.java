@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class UserResponse {
     private String email;
     private String password;
     private long phoneNumber;
-    private List<String> roles;
+    private List<String> roles = new ArrayList<>();
 
     public UserResponse(User user) {
         this.id = user.getId();
@@ -27,6 +28,11 @@ public class UserResponse {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.phoneNumber = user.getPhoneNumber();
-        this.roles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
+        if (!user.getRoles().isEmpty()) {
+            this.roles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
+        } else {
+            this.roles.add("NONE");
+        } 
+        
     }
 }

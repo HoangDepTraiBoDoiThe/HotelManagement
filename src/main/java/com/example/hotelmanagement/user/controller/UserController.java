@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.user.controller;
 
+import com.example.hotelmanagement.role.model.Role;
 import com.example.hotelmanagement.user.controller.assembler.UserControllerAssembler;
 import com.example.hotelmanagement.user.dto.response.UserResponse;
 import com.example.hotelmanagement.user.model.User;
@@ -27,6 +28,12 @@ public class UserController {
     public ResponseEntity<CollectionModel<EntityModel<UserResponse>>> getAllUsers() {
         CollectionModel<EntityModel<UserResponse>> userCollectionModel = userControllerAssembler.toCollectionModel(userService.getUsers());
         return ResponseEntity.ok(userCollectionModel);
+    }
+
+    @PostMapping
+    public ResponseEntity<EntityModel<UserResponse>> createUser(@RequestBody User newUser) {
+        User createdUser = userService.createUser(newUser);
+        return ResponseEntity.ok(userControllerAssembler.toModel(createdUser));
     }
     
     @PutMapping("{id}")
