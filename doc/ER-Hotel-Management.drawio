@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0" version="24.7.6">
   <diagram name="Trang-1" id="gihccJb1JWVc4bCbBJbI">
-    <mxGraphModel dx="1599" dy="455" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1733" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -650,7 +650,7 @@
           <mxGeometry x="880" y="750" width="90" height="50" as="geometry" />
         </mxCell>
         <mxCell id="DXX1GZGS_qTqpcEUBgQL-25" value="Room image Id" style="ellipse;whiteSpace=wrap;html=1;fontStyle=5" vertex="1" parent="1">
-          <mxGeometry x="890" y="610" width="90" height="50" as="geometry" />
+          <mxGeometry x="890" y="590" width="90" height="50" as="geometry" />
         </mxCell>
         <mxCell id="DXX1GZGS_qTqpcEUBgQL-29" style="edgeStyle=none;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;" edge="1" parent="1" source="DXX1GZGS_qTqpcEUBgQL-28" target="DXX1GZGS_qTqpcEUBgQL-18">
           <mxGeometry relative="1" as="geometry" />
@@ -665,7 +665,7 @@
           <mxGeometry x="940" y="440" width="90" height="50" as="geometry" />
         </mxCell>
         <mxCell id="DXX1GZGS_qTqpcEUBgQL-35" value="Url" style="ellipse;whiteSpace=wrap;html=1;fontStyle=0" vertex="1" parent="1">
-          <mxGeometry x="900" y="530" width="90" height="50" as="geometry" />
+          <mxGeometry x="910" y="520" width="90" height="50" as="geometry" />
         </mxCell>
         <mxCell id="DXX1GZGS_qTqpcEUBgQL-39" style="edgeStyle=none;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=none;endFill=0;" edge="1" parent="1" source="DXX1GZGS_qTqpcEUBgQL-38" target="DXX1GZGS_qTqpcEUBgQL-11">
           <mxGeometry relative="1" as="geometry" />
