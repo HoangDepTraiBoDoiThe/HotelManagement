@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.helper;
 
+import com.example.hotelmanagement.reservation.exception.ReservationException;
 import com.example.hotelmanagement.role.exception.RoleException;
 import com.example.hotelmanagement.user.exception.UserException;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,14 @@ class Handler {
         return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ReservationException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ResponseEntity<?> handleReservationNotFoundException(Exception ex, WebRequest webRequest) {
+        String errorMessage = ex.getMessage();
+        ExceptionData exceptionData = new ExceptionData(String.format(notfoundMessage, errorMessage), webRequest.getDescription(false));
+        return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
+    }
+    
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     ResponseEntity<?> handleOtherException(Exception ex, WebRequest webRequest) {
