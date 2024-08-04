@@ -23,4 +23,11 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "Owner_Id")
     private User owner;
+
+    public Reservation(Date checkIn, Date checkOut, BigDecimal totalPrice, User owner) {
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.totalPrice = totalPrice;
+        this.owner = owner;
+    }
 }
