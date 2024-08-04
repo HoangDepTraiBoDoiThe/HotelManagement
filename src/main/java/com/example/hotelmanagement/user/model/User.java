@@ -22,7 +22,9 @@ public class User {
     private long id;
 
     private String name;
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
     private long phoneNumber;
 
