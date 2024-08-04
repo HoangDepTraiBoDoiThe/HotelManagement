@@ -1,6 +1,5 @@
 package com.example.hotelmanagement.model;
 
-import com.example.hotelmanagement.model.Room;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -28,4 +27,7 @@ public class RoomType {
 
     @ManyToMany(mappedBy = "roomTypes")
     private List<Room> rooms;
+    
+    @ManyToMany(mappedBy = "roomTypes")
+    private List<AppPhotos> roomImages;
 }

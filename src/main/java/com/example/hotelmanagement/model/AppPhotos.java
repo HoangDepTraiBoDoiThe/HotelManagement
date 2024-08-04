@@ -1,6 +1,5 @@
 package com.example.hotelmanagement.model;
 
-import com.example.hotelmanagement.model.Room;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomImage {
+public class AppPhotos {
 
     @Id
     @GeneratedValue
@@ -25,9 +24,9 @@ public class RoomImage {
     private String name;
     
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
+    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"))
     private List<Room> rooms = new ArrayList<>();    
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
-    private List<Room> rooms = new ArrayList<>();
+    @JoinTable(name = "room_type_images", joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"))
+    private List<RoomType> roomTypes = new ArrayList<>();
 }

@@ -1,25 +1,26 @@
 package com.example.hotelmanagement.dto.response;
 
+import com.example.hotelmanagement.model.AppPhotos;
+import com.example.hotelmanagement.model.RoomType;
+import com.example.hotelmanagement.reservation.model.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomResponse {
     private long id;
-    private String roomNumber;
-    private String roomType;
+    private Number roomNumber;
+    private RoomType roomType;
     private boolean isReserved;
-    private long reservationId;
-    private String reservationStartDate;
-    private String reservationEndDate;
-    private long customerId;
-    private String customerName;
-    private String customerEmail;
-    private String customerPhone;
-    private long roomPrice;
+    private Reservation currentReservation;
+    private List<Reservation> reservationHistories;
+    private BigDecimal roomBasePrice;
     private String roomDescription;
-    private String roomImage;
+    private AppPhotos roomImages;
 }
