@@ -11,8 +11,8 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Users {
+@Entity(name = "Users")
+public class User {
     @Id
     @GeneratedValue
     private long id;

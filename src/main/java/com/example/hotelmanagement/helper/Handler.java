@@ -16,6 +16,12 @@ public class Handler {
         return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(RoleException.class)
+    public ResponseEntity<?> handleUserNotFoundException(String message, WebRequest webRequest) {
+        ExceptionData exceptionData = new ExceptionData(String.format(notfoundMessage, message), webRequest.getDescription(true));
+        return new ResponseEntity<>(exceptionData, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleOtherException(String message, WebRequest webRequest) {
         ExceptionData exceptionData = new ExceptionData(String.format("My message - Internal exception: %s", message), webRequest.getDescription(true));
