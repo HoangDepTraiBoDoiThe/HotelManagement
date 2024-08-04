@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,9 @@ public class AppPhotos {
     @GeneratedValue
     private long id;
 
-    @Column(nullable = false, unique = true)
-    private String imageUrl;
+    @Lob
+    @Column(nullable = false)
+    private Blob image;
     private String description;
     private String name;
     
