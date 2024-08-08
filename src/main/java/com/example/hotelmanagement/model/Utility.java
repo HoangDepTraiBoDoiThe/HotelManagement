@@ -23,17 +23,26 @@ public class Utility {
 
     @ManyToMany(mappedBy = "additionRoomUtility")
     private List<Reservation> reservations = new ArrayList<>();
-    
+
     @NotBlank
     @Column(nullable = false)
+    @Size(max = 20, message = "20 characters limited. Name should be short and directive, any more information can be put in the description.")
     private String utilityName;
-    
+
     @NotBlank
     @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal utilityBasePrice;
+
     @Size(max = 2000)
     private String utilityDescription;
+
     @Column(nullable = false)
     private boolean utilityStatus;
+
+    @ManyToMany(mappedBy = "roomUtilities")
+    private List<Room> rooms = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "roomTypeUtilities")
+    private List<RoomType> roomTypes = new ArrayList<>();
 }

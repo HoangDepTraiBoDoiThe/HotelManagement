@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -14,7 +16,10 @@ public class Bill {
     @GeneratedValue
     private long id;
 
-    @OneToOne(mappedBy = "reservationBill", orphanRemoval = true)
+    @Column(nullable = false)
+    private LocalDate date;
+    
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(referencedColumnName = "id")
     private Reservation reservation;
 }

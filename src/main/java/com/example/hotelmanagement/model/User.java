@@ -1,6 +1,8 @@
 package com.example.hotelmanagement.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,15 +21,23 @@ public class User {
     @GeneratedValue
     private long id;
 
+    @Size(max = 100)
+    @NotBlank
+    @Column(nullable = false)
     private String name;
+    
     @Column(nullable = false)
     private String email;
+    
+    @NotBlank
     @Column(nullable = false)
     private String password;
-    private long phoneNumber;
+    
+    @NotBlank(message = "Phone number is required")
+    private String phoneNumber;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinTable(name = "UserRole", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "Id"))
+    @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "Id"))
     private Set<Role> roles = new HashSet<>();
     
     @OneToMany(mappedBy = "owner")
