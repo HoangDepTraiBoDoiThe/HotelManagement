@@ -1,4 +1,4 @@
-package com.example.hotelmanagement.Auth;
+package com.example.hotelmanagement.Auth.UserDetail;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
 import lombok.AllArgsConstructor;
