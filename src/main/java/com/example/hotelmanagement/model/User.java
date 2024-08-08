@@ -37,8 +37,8 @@ public class User {
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "Id"))
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
     
     @OneToMany(mappedBy = "owner")

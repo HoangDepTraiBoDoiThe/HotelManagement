@@ -34,11 +34,13 @@ public class DataInitializer {
     @PostConstruct
     public void initData() {
         if (roleRepository.findAll().isEmpty()) {
-            utils.getAllRolesToAdd().stream().map(role -> roleRepository.save(new Role(role)));
+            utils.getAllRolesToAdd().stream().map(role -> roleRepository.save(new Role(role.name()))).forEach(role -> {});
             logger.info("Initialize initial roles");
         }
         if (userRepository.findUsersByRoleName(ApplicationRole.ADMIN.name()).isEmpty()) {
             User newUserAsAdmin = new User("Admin", "DummyEmail@Gmail.com", passwordEncoder.encode(initPassword), initPhoneNumber);
+            Role adminRole = roleRepository.findRoleByRoleName(ApplicationRole.ADMIN.name()).orElseGet(() -> roleRepository.save(new Role(ApplicationRole.ADMIN.name())));
+            newUserAsAdmin.getRoles().add(adminRole);
             userRepository.save(newUserAsAdmin);
             logger.info("Initialize initial admin");
         }

@@ -20,7 +20,7 @@ public class UserResponse {
     private String email;
     private String password;
     private String phoneNumber;
-    private List<ApplicationRole> roles = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
 
     public UserResponse(User user) {
         this.id = user.getId();
@@ -31,7 +31,7 @@ public class UserResponse {
         if (!user.getRoles().isEmpty()) {
             this.roles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
         } else {
-            this.roles.add(ApplicationRole.NONE);
+            this.roles.add(ApplicationRole.NONE.name());
         } 
         
     }

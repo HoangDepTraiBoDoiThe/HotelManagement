@@ -23,13 +23,13 @@ public class RoleService {
     }
 
     public Role createRole(ApplicationRole roleName) {
-        Role newRole = new Role(roleName);
+        Role newRole = new Role(roleName.name());
         return roleRepository.save(newRole);
     }
 
     public Role updateRole(long roleId, ApplicationRole roleName) {
         Role role = roleRepository.findById(roleId).orElseThrow(() -> new RoleException("Role not found"));
-        role.setRoleName(roleName);
+        role.setRoleName(roleName.name());
         return roleRepository.save(role);
     }
 
