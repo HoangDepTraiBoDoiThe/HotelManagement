@@ -23,7 +23,7 @@ public class User {
 
     @Size(max = 100)
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
     
     @Column(nullable = false)
