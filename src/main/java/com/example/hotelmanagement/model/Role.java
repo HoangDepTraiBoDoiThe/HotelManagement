@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.model;
 
+import com.example.hotelmanagement.constants.ApplicationRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,12 +22,9 @@ public class Role {
     
     @Column(nullable = false)
     @NotBlank
-    private String RoleName;
+    private ApplicationRole RoleName;
     
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
 
-    public Role(String roleName) {
-        RoleName = roleName;
-    }
 }
