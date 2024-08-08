@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.dto.response;
 
+import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.model.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 public class RoleResponse {
 
-    private String roleName;
+    private ApplicationRole roleName;
     private long id;
-    public RoleResponse(String roleName) {
+    public RoleResponse(ApplicationRole roleName) {
         this.roleName = roleName;
     }
 

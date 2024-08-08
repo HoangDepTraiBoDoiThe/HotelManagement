@@ -16,9 +16,9 @@ import java.util.function.Function;
 
 @Configuration
 public class AuthUtils {
-    @Value("{auth.security.token.securityKey}")
+    @Value("${auth.security.token.securityKey}")
     private String jwtKey;
-    @Value("{auth.security.token.expirationInMillis}")
+    @Value("${auth.security.token.expirationInMillis}")
     private String expirationInMillis;
     private static final Logger logger = LoggerFactory.getLogger(AuthUtils.class);
     private SecretKey getSecurityKey() {

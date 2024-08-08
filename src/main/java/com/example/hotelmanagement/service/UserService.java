@@ -26,7 +26,12 @@ public class UserService {
     }
 
     public User createUser(User newUser) {
-        return userRepository.save(newUser);
+        boolean isUserNameAvailable = userRepository.findUserByName(newUser.getName()).isEmpty();
+        if (isUserNameAvailable) {
+            userRepository.findUserByName(newUser.getName());
+            return userRepository.save(newUser);
+        }
+        throw new UserException("Username is already taken.");
     }
     
     public User updateUser(long id, User newUserData) {

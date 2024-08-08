@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.exception.RoleException;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.repository.RoleRepository;
@@ -21,12 +22,12 @@ public class RoleService {
         return roleRepository.findById(roleId).orElseThrow(() -> new RoleException("Role not found"));
     }
 
-    public Role createRole(String roleName) {
+    public Role createRole(ApplicationRole roleName) {
         Role newRole = new Role(roleName);
         return roleRepository.save(newRole);
     }
 
-    public Role updateRole(long roleId, String roleName) {
+    public Role updateRole(long roleId, ApplicationRole roleName) {
         Role role = roleRepository.findById(roleId).orElseThrow(() -> new RoleException("Role not found"));
         role.setRoleName(roleName);
         return roleRepository.save(role);

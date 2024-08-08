@@ -35,10 +35,6 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> userRegister(@RequestBody RegisterRequest request) throws AuthenticationException {
-        if (userService.getUserByName(request.getUserName()) != null) {
-            throw new AuthenticationException("Username is already taken.");
-        }
-
         User newUser = request.toUser(passwordEncoder);
         userService.createUser(newUser);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -47,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> userLogin(@RequestBody LoginRequest request) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword());
 
         Authentication authentication = authenticationManager.authenticate(authToken);
         AuthUserDetail userDetails = (AuthUserDetail) authentication.getPrincipal();
