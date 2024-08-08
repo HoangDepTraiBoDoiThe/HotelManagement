@@ -18,12 +18,17 @@ public class AuthUserDetail implements UserDetails {
     String userName;
     String password;
     String email;
-    List<ApplicationRole> owningApplicationRoles;
-    boolean isEnable = true;
-    
+    Collection<GrantedAuthority> owningAuthorities;
+
+    public AuthUserDetail(String userName, String password, String email) {
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return owningAuthorities;
     }
 
     @Override
@@ -53,6 +58,6 @@ public class AuthUserDetail implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnable;
+        return UserDetails.super.isEnabled();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.dto.response;
 
+import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.User;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class UserResponse {
     private String email;
     private String password;
     private String phoneNumber;
-    private List<String> roles = new ArrayList<>();
+    private List<ApplicationRole> roles = new ArrayList<>();
 
     public UserResponse(User user) {
         this.id = user.getId();
@@ -30,7 +31,7 @@ public class UserResponse {
         if (!user.getRoles().isEmpty()) {
             this.roles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
         } else {
-            this.roles.add("NONE");
+            this.roles.add(ApplicationRole.NONE);
         } 
         
     }
