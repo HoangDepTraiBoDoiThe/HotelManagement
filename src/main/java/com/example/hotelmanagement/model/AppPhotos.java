@@ -25,10 +25,8 @@ public class AppPhotos {
     private String description;
     private String name;
     
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "roomImage")
     private List<Room> rooms = new ArrayList<>();    
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "room_type_images", joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "roomTypeImages")
     private List<RoomType> roomTypes = new ArrayList<>();
 }

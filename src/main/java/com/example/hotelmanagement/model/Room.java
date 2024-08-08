@@ -24,14 +24,15 @@ public class Room {
     private String roomNumber;
     private RoomStatus roomStatus = RoomStatus.ROOM_OUT_OF_ORDER;
 
-    @ManyToMany(mappedBy = "rooms")
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<AppPhotos> roomImage;
     
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "reservatino_is", referencedColumnName = "id"))
     private List<Reservation> reservations = new ArrayList<>();
     
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"))
     private List<RoomType> roomTypes = new ArrayList<>();
 }
