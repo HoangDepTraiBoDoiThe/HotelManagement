@@ -20,6 +20,10 @@ public class UserService {
     public User getUserById(long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
     }
+    
+    public User getUserByName(String userName) {
+        return userRepository.findUserByName(userName).orElseThrow(() -> new UserException("User not found"));
+    }
 
     public User createUser(User newUser) {
         return userRepository.save(newUser);

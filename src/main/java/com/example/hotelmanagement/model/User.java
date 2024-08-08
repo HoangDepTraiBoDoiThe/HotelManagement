@@ -30,6 +30,7 @@ public class User {
     private String email;
     
     @NotBlank
+    @Size(min = 12)
     @Column(nullable = false)
     private String password;
     
@@ -42,4 +43,11 @@ public class User {
     
     @OneToMany(mappedBy = "owner")
     private List<Reservation> reservations = new ArrayList<>();
+
+    public User(String name, String email, String password, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
 }
