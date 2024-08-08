@@ -18,7 +18,7 @@ public class UserResponse {
     private String name;
     private String email;
     private String password;
-    private long phoneNumber;
+    private String phoneNumber;
     private List<String> roles = new ArrayList<>();
 
     public UserResponse(User user) {
