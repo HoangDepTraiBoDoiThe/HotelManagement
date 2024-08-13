@@ -27,7 +27,7 @@ public class UtilityService {
         return utilityRepository.save(utility);
     }
     
-    public Utility updateUtility(long utilityId, @Validated UtilityRequest newUtilityData) {
+    public Utility updateUtility(long utilityId, UtilityRequest newUtilityData) {
         Utility existingUtility = utilityRepository.findById(utilityId).orElseThrow(() -> new ResourceNotFoundException("Utility not found"));
 
         existingUtility.setUtilityName(newUtilityData.utilityName());
