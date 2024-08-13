@@ -1,7 +1,7 @@
 package com.example.hotelmanagement;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
-import com.example.hotelmanagement.helper.Utils;
+import com.example.hotelmanagement.helper.MyHelper;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.RoleRepository;
@@ -21,7 +21,7 @@ public class DataInitializer {
     private static final Logger logger = Logger.getLogger(DataInitializer.class.getName());
     
     // fields
-    private final Utils utils;
+    private final MyHelper myHelper;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -34,7 +34,7 @@ public class DataInitializer {
     @PostConstruct
     public void initData() {
         if (roleRepository.findAll().isEmpty()) {
-            utils.getAllRolesToAdd().stream().map(role -> roleRepository.save(new Role(role.name()))).forEach(role -> {});
+            myHelper.getAllRolesToAdd().stream().map(role -> roleRepository.save(new Role(role.name()))).forEach(role -> {});
             logger.info("Initialize initial roles");
         }
         if (userRepository.findUsersByRoleName(ApplicationRole.ADMIN.name()).isEmpty()) {

@@ -1,7 +1,8 @@
 package com.example.hotelmanagement.helper;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class Utils {
+public class MyHelper {
     public static Blob toBlob(String iamgeString) throws SQLException {
         if (iamgeString.isBlank()) return null;
         try {
@@ -28,5 +29,9 @@ public class Utils {
         applicationRoles.add(ApplicationRole.ADMIN);
         applicationRoles.add(ApplicationRole.MANAGER);
         return  applicationRoles;
+    }
+
+    public List<String> getUserApplicationRole(Authentication authentication) {
+        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     }
 }

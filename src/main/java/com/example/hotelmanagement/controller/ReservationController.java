@@ -1,6 +1,6 @@
 package com.example.hotelmanagement.controller;
 
-import com.example.hotelmanagement.controller.assembler.ReservationControllerAssembler;
+import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
@@ -18,33 +18,33 @@ import java.util.List;
 @RequestMapping("/api/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
-    private final ReservationControllerAssembler reservationControllerAssembler;
+    private final ReservationAssembler reservationAssembler;
     
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<ReservationResponse>>> getAllReservation() {
         List<Reservation> reservations = reservationService.getAllReservations();
-        CollectionModel<EntityModel<ReservationResponse>> responseCollectionModel = reservationControllerAssembler.toCollectionModel(reservations);
+        CollectionModel<EntityModel<ReservationResponse>> responseCollectionModel = reservationAssembler.toCollectionModel(reservations);
         return ResponseEntity.ok(responseCollectionModel);
     }
     
     @GetMapping("{id}")
     public ResponseEntity<EntityModel<ReservationResponse>> getReservation(@PathVariable long id) {
         Reservation reservation = reservationService.getReservation(id);
-        EntityModel<ReservationResponse> reservationResponse = reservationControllerAssembler.toModel(reservation);
+        EntityModel<ReservationResponse> reservationResponse = reservationAssembler.toModel(reservation);
         return ResponseEntity.ok(reservationResponse);
     } 
     
     @PostMapping
     public ResponseEntity<EntityModel<ReservationResponse>> createReservation(@RequestBody ReservationRequest reservationRequest) {
         Reservation newReservation = reservationService.createReservation(reservationRequest);
-        EntityModel<ReservationResponse> reservationResponse = reservationControllerAssembler.toModel(newReservation);
+        EntityModel<ReservationResponse> reservationResponse = reservationAssembler.toModel(newReservation);
         return ResponseEntity.ok(reservationResponse);
     }
     
     @PutMapping("{id}")
     public ResponseEntity<EntityModel<ReservationResponse>> updateReservation(@PathVariable long id, @RequestBody ReservationRequest reservationRequest) {
         Reservation updatedReservation = reservationService.updateReservation(id, reservationRequest);
-        EntityModel<ReservationResponse> reservationResponse = reservationControllerAssembler.toModel(updatedReservation);
+        EntityModel<ReservationResponse> reservationResponse = reservationAssembler.toModel(updatedReservation);
         return ResponseEntity.ok(reservationResponse);
     }
     

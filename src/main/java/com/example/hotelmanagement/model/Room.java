@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,33 +25,43 @@ public class Room {
     private long id;
 
     @Column(nullable = false)
-    @NotBlank
-    @Size(max = 20, message = "20 characters limited. Room name should be short and directive, any more information can be put in the description.")
     private String roomName;
+    
+    private String roomDescription;
+    
+    @Column(nullable = false)
+    private BigDecimal roomBasePrice;    
     
     @Column(nullable = false)
     private Number floorNumber;
     
     @Column(nullable = false)
-    @NotBlank
-    @Positive
-    private String roomNumber;
+    private Number roomNumber;
 
     @Column(nullable = false)
-    private RoomStatus roomStatus = RoomStatus.ROOM_OUT_OF_ORDER;
+    private String roomStatus = RoomStatus.ROOM_OUT_OF_ORDER.toString();
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    public Room(String roomName, String roomDescription, BigDecimal roomBasePrice, Number floorNumber, Number roomNumber, String roomStatus) {
+        this.roomName = roomName;
+        this.roomDescription = roomDescription;
+        this.roomBasePrice = roomBasePrice;
+        this.floorNumber = floorNumber;
+        this.roomNumber = roomNumber;
+        this.roomStatus = roomStatus;
+    }
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private Set<AppPhotos> roomImage = new HashSet<>();
     
     @ManyToMany(mappedBy = "rooms")
     private Set<Reservation> reservations = new HashSet<>();
     
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"))
     private Set<RoomType> roomTypes = new HashSet<>();    
     
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "Room_Utilities", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomUtility_id", referencedColumnName = "id"))
     private Set<Utility> roomUtilities= new HashSet<>();
 }

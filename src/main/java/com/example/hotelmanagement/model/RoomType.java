@@ -49,7 +49,7 @@ public class RoomType {
     @JoinTable(name = "room_type_image", joinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private Set<AppPhotos> roomTypeImages = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "Room_Type_Utilities", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
     private Set<Utility> roomTypeUtilities = new HashSet<>();
     

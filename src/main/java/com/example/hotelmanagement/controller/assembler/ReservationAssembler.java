@@ -9,7 +9,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ReservationControllerAssembler implements RepresentationModelAssembler<Reservation, EntityModel<ReservationResponse>> {
+public class ReservationAssembler implements RepresentationModelAssembler<Reservation, EntityModel<ReservationResponse>> {
     @Override
     public EntityModel<ReservationResponse> toModel(Reservation entity) {
         ReservationResponse reservationResponse = new ReservationResponse(entity);
