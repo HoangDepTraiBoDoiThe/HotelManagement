@@ -35,6 +35,13 @@ public class RoomType {
     @PositiveOrZero
     private BigDecimal basePrice;
 
+    public RoomType(String typeName, String description, Number capacity, BigDecimal basePrice) {
+        this.typeName = typeName;
+        this.description = description;
+        this.capacity = capacity;
+        this.basePrice = basePrice;
+    }
+
     @ManyToMany(mappedBy = "roomTypes")
     private Set<Room> rooms = new HashSet<>();
     
@@ -45,4 +52,6 @@ public class RoomType {
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "Room_Type_Utilities", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
     private Set<Utility> roomTypeUtilities = new HashSet<>();
+    
+    
 }
