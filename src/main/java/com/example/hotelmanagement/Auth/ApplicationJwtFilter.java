@@ -32,7 +32,7 @@ public class ApplicationJwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(nameAndPassAuth);
             }
         } catch (Exception exception) {
-            logger.error("Cannot set user authentication: ", exception.getCause());
+            logger.warn("Server message: Cannot set user authentication: ", exception.getCause());
         }
         filterChain.doFilter(request, response);
     }

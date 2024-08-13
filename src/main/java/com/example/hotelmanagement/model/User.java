@@ -42,7 +42,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
     
     @OneToMany(mappedBy = "owner")
-    private List<Reservation> reservations = new ArrayList<>();
+    private Set<Reservation> reservations = new HashSet<>();
 
     public User(String name, String email, String password, String phoneNumber) {
         this.name = name;

@@ -13,9 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Entity(name = "reservations")
@@ -43,11 +41,11 @@ public class Reservation {
 
     @ManyToMany
     @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "reservatino_is", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"))
-    private List<Room> rooms = new ArrayList<>();
+    private Set<Room> rooms = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "Reservation_Room_Utilities", joinColumns = @JoinColumn(name = "reservatino_is", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomUtility_id", referencedColumnName = "id"))
-    private List<Utility> additionRoomUtility = new ArrayList<>();
+    private Set<Utility> additionRoomUtility = new HashSet<>();
     
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "reservation")
     private Bill reservationBill;

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -34,13 +36,13 @@ public class RoomType {
     private BigDecimal basePrice;
 
     @ManyToMany(mappedBy = "roomTypes")
-    private List<Room> rooms = new ArrayList<>();
+    private Set<Room> rooms = new HashSet<>();
     
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "room_type_image", joinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
-    private List<AppPhotos> roomTypeImages;
+    private Set<AppPhotos> roomTypeImages = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "Room_Type_Utilities", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
-    private List<Utility> roomTypeUtilities = new ArrayList<>();
+    private Set<Utility> roomTypeUtilities = new HashSet<>();
 }

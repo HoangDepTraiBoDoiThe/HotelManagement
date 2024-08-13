@@ -10,7 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -40,16 +41,16 @@ public class Room {
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
-    private List<AppPhotos> roomImage = new ArrayList<>();
+    private Set<AppPhotos> roomImage = new HashSet<>();
     
     @ManyToMany(mappedBy = "rooms")
-    private List<Reservation> reservations = new ArrayList<>();
+    private Set<Reservation> reservations = new HashSet<>();
     
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomType_id", referencedColumnName = "id"))
-    private List<RoomType> roomTypes = new ArrayList<>();    
+    private Set<RoomType> roomTypes = new HashSet<>();    
     
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "Room_Utilities", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomUtility_id", referencedColumnName = "id"))
-    private List<Utility> roomUtilities= new ArrayList<>();
+    private Set<Utility> roomUtilities= new HashSet<>();
 }

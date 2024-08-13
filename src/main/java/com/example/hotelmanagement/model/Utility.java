@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -20,9 +22,6 @@ public class Utility {
     @Id
     @GeneratedValue
     private long id;
-
-    @ManyToMany(mappedBy = "additionRoomUtility")
-    private List<Reservation> reservations = new ArrayList<>();
 
     @NotBlank
     @Column(nullable = false)
@@ -40,9 +39,12 @@ public class Utility {
     @Column(nullable = false)
     private boolean utilityStatus;
 
+    @ManyToMany(mappedBy = "additionRoomUtility")
+    private Set<Reservation> reservations = new HashSet<>();
+
     @ManyToMany(mappedBy = "roomUtilities")
-    private List<Room> rooms = new ArrayList<>();
+    private Set<Room> rooms = new HashSet<>();
 
     @ManyToMany(mappedBy = "roomTypeUtilities")
-    private List<RoomType> roomTypes = new ArrayList<>();
+    private Set<RoomType> roomTypes = new HashSet<>();
 }
