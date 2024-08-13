@@ -1,7 +1,7 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.exception.ClientBadRequestException;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
-import com.example.hotelmanagement.exception.UserException;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class UserService {
             userRepository.findUserByName(newUser.getName());
             return userRepository.save(newUser);
         }
-        throw new UserException("Username is already taken.");
+        throw new ClientBadRequestException("Username is already taken.");
     }
     
     public User updateUser(long id, User newUserData) {

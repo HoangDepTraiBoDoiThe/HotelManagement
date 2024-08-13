@@ -1,7 +1,7 @@
 package com.example.hotelmanagement.service;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
-import com.example.hotelmanagement.exception.RoleException;
+import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class RoleService {
     }
 
     public Role getRoleById(long roleId) {
-        return roleRepository.findById(roleId).orElseThrow(() -> new RoleException("Role not found"));
+        return roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
     }
 
     public Role createRole(ApplicationRole roleName) {
@@ -28,13 +28,13 @@ public class RoleService {
     }
 
     public Role updateRole(long roleId, ApplicationRole roleName) {
-        Role role = roleRepository.findById(roleId).orElseThrow(() -> new RoleException("Role not found"));
+        Role role = roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
         role.setRoleName(roleName.name());
         return roleRepository.save(role);
     }
 
     public void deleteRole(long roleId) {
-        Role role = roleRepository.findById(roleId).orElseThrow(() -> new RoleException("Role not found"));
+        Role role = roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
         roleRepository.delete(role);
     }
 }

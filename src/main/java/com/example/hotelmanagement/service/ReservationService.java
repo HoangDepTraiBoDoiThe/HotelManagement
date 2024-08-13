@@ -4,7 +4,6 @@ import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
 import com.example.hotelmanagement.model.repository.ReservationRepository;
-import com.example.hotelmanagement.exception.UserException;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
