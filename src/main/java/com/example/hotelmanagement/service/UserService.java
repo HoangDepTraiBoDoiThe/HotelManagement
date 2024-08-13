@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.exception.UserException;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
@@ -18,11 +19,11 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
     
     public User getUserByName(String userName) {
-        return userRepository.findUserByName(userName).orElseThrow(() -> new UserException("User not found"));
+        return userRepository.findUserByName(userName).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     public User createUser(User newUser) {
@@ -35,7 +36,7 @@ public class UserService {
     }
     
     public User updateUser(long id, User newUserData) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         existingUser.setName(newUserData.getName());
         existingUser.setEmail(newUserData.getEmail());
@@ -47,7 +48,7 @@ public class UserService {
     }
     
     public void deleteUser(long id) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserException("User not found"));
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userRepository.deleteById(id);
     }
 }

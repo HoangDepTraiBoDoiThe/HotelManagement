@@ -1,8 +1,8 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
-import com.example.hotelmanagement.exception.ReservationException;
 import com.example.hotelmanagement.model.repository.ReservationRepository;
 import com.example.hotelmanagement.exception.UserException;
 import com.example.hotelmanagement.model.User;
@@ -23,13 +23,13 @@ public class ReservationService {
     }
     
     public Reservation getReservation(long id) {
-        return reservationRepository.findById(id).orElseThrow(() -> new ReservationException("Reservation not found"));
+        return reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
     }
 
     public Reservation createReservation(ReservationRequest reservationRequest) {
 //        TODO: a room shouldnt be able to be in 2 active reservations at the same time.  
 
-        User user = userRepository.findById(reservationRequest.getOwnerId()).orElseThrow(() -> new UserException("User not found"));
+        User user = userRepository.findById(reservationRequest.getOwnerId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Reservation reservation = new Reservation(reservationRequest.getCheckIn(), reservationRequest.getCheckOut(), reservationRequest.getTotalPrice(), user);
         
         Reservation newReservation = reservationRepository.save(reservation);
@@ -37,7 +37,7 @@ public class ReservationService {
     }
     
     public Reservation updateReservation(long id, ReservationRequest reservationRequest) {
-        Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new ReservationException("Reservation not found"));
+        Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
         reservationToUpdate.setCheckIn(reservationRequest.getCheckIn());
         reservationToUpdate.setCheckOut(reservationRequest.getCheckOut());
         reservationToUpdate.setTotalPrice(reservationRequest.getTotalPrice());
@@ -46,7 +46,7 @@ public class ReservationService {
     }
     
     public void deleteReservation(long id) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ReservationException("Reservation not found"));
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
         reservationRepository.delete(reservation);
     }
 }

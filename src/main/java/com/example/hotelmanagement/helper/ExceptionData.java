@@ -1,13 +1,9 @@
 package com.example.hotelmanagement.helper;
 
+import jdk.jshell.Snippet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aspectj.bridge.Message;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ExceptionData {
-    private String message;
-    private String webRequest;
-}
+public record ExceptionData(String message, String status, String webRequest) {}
