@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,37 +19,32 @@ import java.util.List;
 @RequestMapping("/api/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
-    private final ReservationAssembler reservationAssembler;
     
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<ReservationResponse>>> getAllReservation() {
-        List<Reservation> reservations = reservationService.getAllReservations();
-        CollectionModel<EntityModel<ReservationResponse>> responseCollectionModel = reservationAssembler.toCollectionModel(reservations);
-        return ResponseEntity.ok(responseCollectionModel);
+    public ResponseEntity<CollectionModel<EntityModel<ReservationResponse>>> getAllReservation(Authentication authentication) {
+        CollectionModel<EntityModel<ReservationResponse>> reservations = reservationService.getAllReservations(authentication);
+        return ResponseEntity.ok(reservations);
     }
     
     @GetMapping("{id}")
-    public ResponseEntity<EntityModel<ReservationResponse>> getReservation(@PathVariable long id) {
-        Reservation reservation = reservationService.getReservation(id);
-        EntityModel<ReservationResponse> reservationResponse = reservationAssembler.toModel(reservation);
-        return ResponseEntity.ok(reservationResponse);
+    public ResponseEntity<EntityModel<ReservationResponse>> getReservation(@PathVariable long id, Authentication authentication) {
+        EntityModel<ReservationResponse> responseEntityModel = reservationService.getReservation(id, authentication);
+        return ResponseEntity.ok(responseEntityModel);
     } 
     
-    @PostMapping
-    public ResponseEntity<EntityModel<ReservationResponse>> createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Reservation newReservation = reservationService.createReservation(reservationRequest);
-        EntityModel<ReservationResponse> reservationResponse = reservationAssembler.toModel(newReservation);
-        return ResponseEntity.ok(reservationResponse);
+    @PostMapping("/create")
+    public ResponseEntity<EntityModel<ReservationResponse>> createReservation(@RequestBody ReservationRequest reservationRequest, Authentication authentication) {
+        EntityModel<ReservationResponse> responseEntityModel = reservationService.createReservation(reservationRequest, authentication);
+        return ResponseEntity.ok(responseEntityModel);
     }
     
-    @PutMapping("{id}")
-    public ResponseEntity<EntityModel<ReservationResponse>> updateReservation(@PathVariable long id, @RequestBody ReservationRequest reservationRequest) {
-        Reservation updatedReservation = reservationService.updateReservation(id, reservationRequest);
-        EntityModel<ReservationResponse> reservationResponse = reservationAssembler.toModel(updatedReservation);
-        return ResponseEntity.ok(reservationResponse);
+    @PutMapping("{id}/update")
+    public ResponseEntity<EntityModel<ReservationResponse>> updateReservation(@PathVariable long id, @RequestBody ReservationRequest reservationRequest, Authentication authentication) {
+        EntityModel<ReservationResponse> responseEntityModel = reservationService.updateReservation(id, reservationRequest, authentication);
+        return ResponseEntity.ok(responseEntityModel);
     }
     
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteReservation(long id) {
         reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();

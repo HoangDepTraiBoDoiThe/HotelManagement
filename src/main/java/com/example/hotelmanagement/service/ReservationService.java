@@ -1,12 +1,18 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
+import com.example.hotelmanagement.controller.assembler.UserAssembler;
+import com.example.hotelmanagement.dto.response.ReservationResponse;
+import com.example.hotelmanagement.dto.response.UserResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
 import com.example.hotelmanagement.model.repository.ReservationRepository;
 import com.example.hotelmanagement.model.User;
-import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,37 +21,48 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final UserRepository userRepository;
+    private final ReservationAssembler reservationAssembler;
+    private final UserService userService;
     
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
-    }
-    
-    public Reservation getReservation(long id) {
-        return reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+    public CollectionModel<EntityModel<ReservationResponse>> getAllReservations(Authentication authentication) {
+        List<ReservationResponse> reservationResponses = reservationRepository.findAll().stream().map(reservation -> makeReservationResponse(reservation, authentication)).toList();
+        CollectionModel<EntityModel<ReservationResponse>> collectionModel = reservationAssembler.toCollectionModel(reservationResponses, authentication);
+        return collectionModel;
     }
 
-    public Reservation createReservation(ReservationRequest reservationRequest) {
+    public EntityModel<ReservationResponse> getReservation(long id, Authentication authentication) {
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+        return reservationAssembler.toModel(makeReservationResponse(reservation, authentication), authentication);
+    }    
+
+    public EntityModel<ReservationResponse> createReservation(ReservationRequest reservationRequest, Authentication authentication) {
 //        TODO: a room shouldnt be able to be in 2 active reservations at the same time.  
-
-        User user = userRepository.findById(reservationRequest.getOwnerId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Reservation reservation = new Reservation(reservationRequest.getCheckIn(), reservationRequest.getCheckOut(), reservationRequest.getTotalPrice(), user);
-        
-        Reservation newReservation = reservationRepository.save(reservation);
-        return newReservation;
+        User user  = userService.getUserById_entity(reservationRequest.getOwnerId());
+        Reservation newReservation = new Reservation(reservationRequest.getCheckIn(), reservationRequest.getCheckOut(), reservationRequest.getTotalPrice(), user);
+        Reservation newCreatedReservation = reservationRepository.save(newReservation);
+        return reservationAssembler.toModel(makeReservationResponse(newCreatedReservation, authentication), authentication);
     }
     
-    public Reservation updateReservation(long id, ReservationRequest reservationRequest) {
+    public EntityModel<ReservationResponse> updateReservation(long id, ReservationRequest reservationRequest, Authentication authentication) {
         Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
         reservationToUpdate.setCheckIn(reservationRequest.getCheckIn());
         reservationToUpdate.setCheckOut(reservationRequest.getCheckOut());
         reservationToUpdate.setTotalPrice(reservationRequest.getTotalPrice());
-        
-        return reservationRepository.save(reservationToUpdate);
+
+        Reservation updatedReservation = reservationRepository.save(reservationToUpdate);
+        return reservationAssembler.toModel(makeReservationResponse(updatedReservation, authentication), authentication);
     }
     
     public void deleteReservation(long id) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
         reservationRepository.delete(reservation);
     }
+
+    private ReservationResponse makeReservationResponse(Reservation reservation, Authentication authentication) {
+        ReservationResponse reservationResponse = new ReservationResponse(reservation);
+        EntityModel<UserResponse> userResponseEntityModel = userService.getUserById(reservation.getOwner().getId(), authentication);
+        reservationResponse.setOwner(userResponseEntityModel);
+        return reservationResponse;
+    }
+
 }
