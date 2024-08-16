@@ -43,11 +43,11 @@ public class UtilityService {
         return utilityAssembler.toModel(makeUtilityResponseFull(utility, authentication), authentication);
     }
 
-    public List<Utility> getAllByIds_entity(List<Long> longs) {
-        return longs.stream().map(this::getUtilityById_entity).toList();
+    public List<Utility> getAllByIds_entity(List<Long> longs, Authentication authentication) {
+        return longs.stream().map(aLong -> getUtilityById_entity(aLong, authentication)).toList();
     }
 
-    public Utility getUtilityById_entity(long utilityId) {
+    public Utility getUtilityById_entity(long utilityId, Authentication authentication) {
         return utilityRepository.findById(utilityId).orElseThrow(() -> new ResourceNotFoundException(String.format("Utility with id %d not found", utilityId)));
     }
     

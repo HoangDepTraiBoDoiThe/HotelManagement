@@ -4,6 +4,7 @@ import com.example.hotelmanagement.controller.assembler.RoomTypeAssembler;
 import com.example.hotelmanagement.dto.request.RoomTypeRequest;
 import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
+import com.example.hotelmanagement.model.Room;
 import com.example.hotelmanagement.model.RoomType;
 import com.example.hotelmanagement.model.Utility;
 import com.example.hotelmanagement.model.repository.RoomTypeRepository;
@@ -38,12 +39,15 @@ public class RoomTypeService {
 
         RoomTypeResponse roomTypeResponse = makeRoomTypeResponse(roomType, authentication);
         return roomTypeAssembler.toModel(roomTypeResponse, authentication);
+    }   
+    public RoomType getRoomTypeById_entity(Long id, Authentication authentication) {
+        return roomTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room type not found"));
     }
 
     @Transactional
     public EntityModel<RoomTypeResponse> createRoomType(RoomTypeRequest roomTypeRequest, Authentication authentication) {
         RoomType newRoomType = new RoomType(roomTypeRequest.roomTypeName(), roomTypeRequest.description(), roomTypeRequest.roomCapability(), roomTypeRequest.basePrice());
-        Set<Utility> utilities = roomTypeRequest.utilityIds().stream().map(utilityService::getUtilityById_entity).collect(Collectors.toSet());
+        Set<Utility> utilities = roomTypeRequest.utilityIds().stream().map((Long utilityId) -> utilityService.getUtilityById_entity(utilityId, authentication)).collect(Collectors.toSet());
         newRoomType.setRoomTypeUtilities(utilities);
 
         RoomType newCreatedRoomType = roomTypeRepository.save(newRoomType);
@@ -59,7 +63,7 @@ public class RoomTypeService {
         roomType.setDescription(roomTypeRequest.description());
         roomType.setBasePrice(roomTypeRequest.basePrice());
         roomType.setCapacity(roomTypeRequest.roomCapability());
-        Set<Utility> utilities = new HashSet<>(utilityService.getAllByIds_entity(roomTypeRequest.utilityIds()));
+        Set<Utility> utilities = new HashSet<>(utilityService.getAllByIds_entity(roomTypeRequest.utilityIds(), authentication));
         roomType.setRoomTypeUtilities(utilities);
         RoomType updatedRoomType = roomTypeRepository.save(roomType);
         return roomTypeAssembler.toModel(makeRoomTypeResponse(updatedRoomType, authentication), authentication);
@@ -70,7 +74,7 @@ public class RoomTypeService {
         roomTypeRepository.deleteById(id);
     }
 
-    private static RoomTypeResponse makeRoomTypeResponse(RoomType roomType, Authentication authentication) {
+    public RoomTypeResponse makeRoomTypeResponse(RoomType roomType, Authentication authentication) {
         RoomTypeResponse roomTypeResponse = new RoomTypeResponse(roomType, null);
         return roomTypeResponse;
     }
