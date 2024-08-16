@@ -29,6 +29,4 @@ public class AppPhotos {
     
     @ManyToMany(mappedBy = "roomImage")
     private Set<Room> rooms = new HashSet<>();    
-    @ManyToMany(mappedBy = "roomTypeImages")
-    private Set<RoomType> roomTypes = new HashSet<>();
 }
