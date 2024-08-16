@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import java.math.BigDecimal;
@@ -19,11 +20,18 @@ public class ReservationResponse extends ResponseBase{
     Date checkOut;
     BigDecimal totalPrice;
     EntityModel<?> owner;
+    CollectionModel<?> rooms;
+    CollectionModel<?> additionalUtilities;
+    EntityModel<?> bill;
 
-    public ReservationResponse(Reservation reservation) {
+    public ReservationResponse(Reservation reservation, EntityModel<?> owner, CollectionModel<?> rooms, CollectionModel<?> additionalUtilities, EntityModel<?> bill) {
         super(reservation.getId());
         this.checkIn = reservation.getCheckIn();
         this.checkOut = reservation.getCheckOut();
         this.totalPrice = reservation.getTotalPrice();
+        this.owner = owner;
+        this.rooms = rooms;
+        this.additionalUtilities = additionalUtilities;
+        this.bill = bill;
     }
 }

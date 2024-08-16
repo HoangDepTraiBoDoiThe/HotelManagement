@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/rooms")
 public class RoomController {
     private final RoomService roomService;
     private final MyHelper myHelper;
@@ -32,18 +33,18 @@ public class RoomController {
         return ResponseEntity.ok(responseEntityModels);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createRoom(@RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
         EntityModel<RoomResponse> roomResponseAdminEntityModel = roomService.createRoom(roomRequest, authentication);
         return ResponseEntity.ok(roomResponseAdminEntityModel);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<?> updateRoom(@PathVariable long id, @RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
         return ResponseEntity.ok(roomService.updateRoomType(id, roomRequest, authentication));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<?> deleteRoom(@PathVariable long id) {
         roomService.deleteRoomType(id);
         return ResponseEntity.ok("Room type deleted successfully");

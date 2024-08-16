@@ -1,8 +1,6 @@
 package com.example.hotelmanagement.controller;
 
-import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
-import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
 import com.example.hotelmanagement.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +8,8 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +30,7 @@ public class ReservationController {
     } 
     
     @PostMapping("/create")
-    public ResponseEntity<EntityModel<ReservationResponse>> createReservation(@RequestBody ReservationRequest reservationRequest, Authentication authentication) {
+    public ResponseEntity<EntityModel<ReservationResponse>> createReservation(@RequestBody @Validated ReservationRequest reservationRequest, Authentication authentication) {
         EntityModel<ReservationResponse> responseEntityModel = reservationService.createReservation(reservationRequest, authentication);
         return ResponseEntity.ok(responseEntityModel);
     }
@@ -44,8 +41,8 @@ public class ReservationController {
         return ResponseEntity.ok(responseEntityModel);
     }
     
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteReservation(long id) {
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
         reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }

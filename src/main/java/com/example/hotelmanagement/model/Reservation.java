@@ -50,10 +50,12 @@ public class Reservation {
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "reservation")
     private Bill reservationBill;
     
-    public Reservation(Date checkIn, Date checkOut, BigDecimal totalPrice, User owner) {
+    public Reservation(Date checkIn, Date checkOut, BigDecimal totalPrice, User owner, Set<Room> rooms, Set<Utility> additionRoomUtility) {
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.totalPrice = totalPrice;
         this.owner = owner;
+        this.rooms = rooms;
+        this.additionRoomUtility = additionRoomUtility;
     }
 }

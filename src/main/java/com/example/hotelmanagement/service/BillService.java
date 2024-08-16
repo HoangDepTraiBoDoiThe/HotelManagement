@@ -24,7 +24,7 @@ public class BillService {
     
     public EntityModel<BillResponse> getBillById(long id, Authentication authentication) {
         Bill bill = billRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Bill with id %d not found", id)));
-        return billAssembler.toModel(makeBillResponse(bill, authentication), authentication);
+        return makeBillResponse(bill, authentication);
     }
     
     public EntityModel<BillResponse> createBill(long reservation_id, BillRequest billRequest, Authentication authentication) {
@@ -34,7 +34,7 @@ public class BillService {
         
         Bill newCreatedBill = billRepository.save(newBill);
         
-        return billAssembler.toModel(makeBillResponse(newCreatedBill, authentication), authentication);
+        return makeBillResponse(newCreatedBill, authentication);
     }
     
     public EntityModel<BillResponse> updateBill(long bill_id, BillRequest billRequest, Authentication authentication) {
@@ -42,7 +42,7 @@ public class BillService {
         bill.setDate(billRequest.getDate());
         
         Bill newCreatedBill = billRepository.save(bill);
-        return billAssembler.toModel(makeBillResponse(newCreatedBill, authentication), authentication);
+        return makeBillResponse(newCreatedBill, authentication);
     }
 
     public void deleteBill(long id) {
@@ -50,8 +50,10 @@ public class BillService {
         billRepository.delete(bill);
     }
 
-    public BillResponse makeBillResponse(Bill bill, Authentication authentication) {
-        EntityModel<ReservationResponse> responseEntityModel = reservationAssembler.toModel(reservationService.makeReservationResponse(bill.getReservation(), authentication), authentication);
-        return new BillResponse(bill, reservationAssembler.toModel(new BillResponse(bill, responseEntityModel), authentication));
+    public EntityModel<BillResponse> makeBillResponse(Bill bill, Authentication authentication) {
+        if (bill == null) return null;
+        EntityModel<ReservationResponse> responseEntityModel = reservationService.makeReservationResponse(bill.getReservation(), authentication);
+        BillResponse billResponse = new BillResponse(bill, reservationAssembler.toModel(new BillResponse(bill, responseEntityModel), authentication));
+        return billAssembler.toModel(billResponse, authentication);
     }
 }

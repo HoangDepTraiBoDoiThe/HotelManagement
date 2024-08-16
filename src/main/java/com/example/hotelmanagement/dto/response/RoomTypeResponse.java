@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 
 import java.math.BigDecimal;
 
@@ -20,13 +19,15 @@ public class RoomTypeResponse extends ResponseBase{
     BigDecimal basePrice;
     Number roomCapability;
     CollectionModel<?> utilities;
+    CollectionModel<?> rooms;
 
-    public RoomTypeResponse(RoomType roomType, CollectionModel<EntityModel<ResponseBase>> utilities) {
+    public RoomTypeResponse(RoomType roomType, CollectionModel<?> utilities, CollectionModel<?> rooms) {
         super(roomType.getId());
         this.roomTypeName = roomType.getTypeName();
         this.description = roomType.getDescription();
         this.basePrice = roomType.getBasePrice();
         this.roomCapability = roomType.getCapacity();
         this.utilities = utilities;
+        this.rooms = rooms;
     }
 }
