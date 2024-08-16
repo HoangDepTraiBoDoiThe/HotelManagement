@@ -1,24 +1,37 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.controller.assembler.UserAssembler;
+import com.example.hotelmanagement.dto.response.UserResponse;
 import com.example.hotelmanagement.exception.ClientBadRequestException;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserAssembler userAssembler;
 
-    public List<User> getUsers() {
-        return userRepository.findAll().stream().toList();
+    public CollectionModel<EntityModel<UserResponse>> getUsers(Authentication authentication) {
+        List<User> users = userRepository.findAll().stream().toList();
+        List<UserResponse> userResponses = users.stream().map(UserResponse::new).toList();
+        return userAssembler.toCollectionModel(userResponses, authentication);
     }
 
-    public User getUserById(long id) {
+    public EntityModel<UserResponse> getUserById(long id, Authentication authentication) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return userAssembler.toModel(new UserResponse(user), authentication);
+    }
+    public User getUserById_entity(long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
     
