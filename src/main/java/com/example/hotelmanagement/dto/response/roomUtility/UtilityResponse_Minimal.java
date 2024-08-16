@@ -1,5 +1,6 @@
-package com.example.hotelmanagement.dto.response;
+package com.example.hotelmanagement.dto.response.roomUtility;
 
+import com.example.hotelmanagement.dto.response.ResponseBase;
 import com.example.hotelmanagement.model.Utility;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

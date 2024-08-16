@@ -1,6 +1,7 @@
 package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.controller.RoomTypeController;
+import com.example.hotelmanagement.dto.response.ResponseBase;
 import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -13,7 +14,7 @@ import java.util.stream.StreamSupport;
 
 @Component
 public class RoomTypeAssembler {
-    public <T extends RoomTypeResponse> EntityModel<T> toModel(T entity, Authentication authentication) {
+    public <T extends ResponseBase> EntityModel<T> toModel(T entity, Authentication authentication) {
         return EntityModel.of(entity,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomTypeById(entity.getId(), authentication)).withSelfRel().withType("GET"),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomAllTypes(authentication)).withRel("Get all room types").withType("GET"),
@@ -23,7 +24,7 @@ public class RoomTypeAssembler {
         );
     }
 
-    public <T extends RoomTypeResponse> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
+    public <T extends ResponseBase> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
         return StreamSupport.stream(entities.spliterator(), false) //
                 .map(t -> toModel(t, authentication)) //
                 .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
