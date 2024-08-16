@@ -2,25 +2,30 @@ package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.controller.RoomTypeController;
 import com.example.hotelmanagement.dto.response.RoomTypeResponse;
-import com.example.hotelmanagement.model.RoomType;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Component
-public class RoomTypeAssembler implements RepresentationModelAssembler<RoomType, EntityModel<RoomTypeResponse>> {
-    @Override
-    public EntityModel<RoomTypeResponse> toModel(RoomType entity) {
-        RoomTypeResponse roomTypeResponse = new RoomTypeResponse(entity.getTypeName(), entity.getDescription(), entity.getBasePrice(), entity.getCapacity()) ;
-        EntityModel<RoomTypeResponse> entityModel = EntityModel.of(roomTypeResponse,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomTypeById(entity.getId())).withSelfRel().withType("GET"),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomAllTypes()).withRel("Get all room types").withType("GET"),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).createRoomType(null)).withRel("Create new room type").withType("POST"),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).updateRoomType(entity.getId(), null)).withRel("Update room type").withType("PUT"),
+public class RoomTypeAssembler {
+    public <T extends RoomTypeResponse> EntityModel<T> toModel(T entity, Authentication authentication) {
+        return EntityModel.of(entity,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomTypeById(entity.getId(), authentication)).withSelfRel().withType("GET"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomAllTypes(authentication)).withRel("Get all room types").withType("GET"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).createRoomType(null, authentication)).withRel("Create new room type").withType("POST"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).updateRoomType(entity.getId(), null, authentication)).withRel("Update room type").withType("PUT"),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).deleteRoomType(entity.getId())).withRel("Delete room type").withType("DELETE")
         );
+    }
 
-        return entityModel;
+    public <T extends RoomTypeResponse> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
+        return StreamSupport.stream(entities.spliterator(), false) //
+                .map(t -> toModel(t, authentication)) //
+                .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
     }
 }

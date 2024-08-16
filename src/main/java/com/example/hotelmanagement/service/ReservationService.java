@@ -1,7 +1,6 @@
 package com.example.hotelmanagement.service;
 
 import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
-import com.example.hotelmanagement.controller.assembler.UserAssembler;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.dto.response.UserResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
@@ -33,6 +32,9 @@ public class ReservationService {
     public EntityModel<ReservationResponse> getReservation(long id, Authentication authentication) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
         return reservationAssembler.toModel(makeReservationResponse(reservation, authentication), authentication);
+    }    
+    public Reservation getReservation_entity(long id) {
+        return reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
     }    
 
     public EntityModel<ReservationResponse> createReservation(ReservationRequest reservationRequest, Authentication authentication) {

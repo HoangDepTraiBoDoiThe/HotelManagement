@@ -7,8 +7,11 @@ import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import com.example.hotelmanagement.model.RoomType;
 import com.example.hotelmanagement.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,31 +22,27 @@ import java.util.List;
 @RequestMapping("/api/rooms/room-types")
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
-    private final RoomTypeAssembler roomTypeAssembler;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getRoomTypeById(@PathVariable long id) {
-        RoomType roomType = roomTypeService.getRoomTypeById(id);
-        return ResponseEntity.ok(roomTypeAssembler.toModel(roomType));
+    public ResponseEntity<EntityModel<?>> getRoomTypeById(@PathVariable long id, Authentication authentication) {
+        return ResponseEntity.ok(roomTypeService.getRoomTypeById(id, authentication));
     }
     
     @GetMapping
-    public ResponseEntity<?> getRoomAllTypes() {
-        List<RoomType> roomTypes = roomTypeService.getAllRoomTypes();
-        var collectionModel = roomTypeAssembler.toCollectionModel(roomTypes);
-        collectionModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomAllTypes()).withSelfRel().withType("GET"));
-        return ResponseEntity.ok(collectionModel);
+    public ResponseEntity<?> getRoomAllTypes(Authentication authentication) {
+        CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponses = roomTypeService.getAllRoomTypes(authentication);
+        return ResponseEntity.ok(roomTypeResponses);
     }
     
     @PostMapping
-    public ResponseEntity<?> createRoomType(@RequestBody @Validated RoomTypeRequest roomTypeRequest) {
-        RoomType roomType = roomTypeService.createRoomType(roomTypeRequest);
-        return ResponseEntity.ok(roomTypeAssembler.toModel(roomType));
+    public ResponseEntity<?> createRoomType(@RequestBody @Validated RoomTypeRequest roomTypeRequest, Authentication authentication) {
+        EntityModel<RoomTypeResponse> roomTypeServiceRoomType = roomTypeService.createRoomType(roomTypeRequest, authentication);
+        return ResponseEntity.ok(roomTypeServiceRoomType);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateRoomType(@PathVariable long id, @RequestBody @Validated RoomTypeRequest roomTypeRequest) {
-        return ResponseEntity.ok(roomTypeAssembler.toModel(roomTypeService.updateRoomType(id, roomTypeRequest)));
+    public ResponseEntity<?> updateRoomType(@PathVariable long id, @RequestBody @Validated RoomTypeRequest roomTypeRequest, Authentication authentication) {
+        return ResponseEntity.ok(roomTypeService.updateRoomType(id, roomTypeRequest, authentication));
     }
     
     @DeleteMapping("/{id}")
