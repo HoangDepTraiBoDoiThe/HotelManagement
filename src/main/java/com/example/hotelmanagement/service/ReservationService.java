@@ -77,7 +77,7 @@ public class ReservationService {
     public EntityModel<ReservationResponse> makeReservationResponse(Reservation reservation, Authentication authentication) {
         // Todo: user
         EntityModel<UserResponse> userResponseEntityModel = userService.getUserById(reservation.getOwner().getId(), authentication);
-        CollectionModel<EntityModel<UtilityResponse_Minimal>> additionalUtilityResponseEntityModels = reservation.getAdditionRoomUtility().stream().map(utility -> utilityService.makeUtilityResponse_Basic(utility, authentication, UtilityResponse_Minimal.class)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
+        CollectionModel<EntityModel<UtilityResponse_Minimal>> additionalUtilityResponseEntityModels = reservation.getAdditionRoomUtility().stream().map(utility -> utilityService.makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
         CollectionModel<EntityModel<RoomResponse>> roomResponseEntityModels = reservation.getRooms().stream().map(room -> roomService.makeRoomResponse(room, authentication)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
         EntityModel<BillResponse> billResponseEntityModel = billService.makeBillResponse(reservation.getReservationBill(), authentication);
         
