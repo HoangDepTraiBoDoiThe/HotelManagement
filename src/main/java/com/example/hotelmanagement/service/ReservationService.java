@@ -60,7 +60,7 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    private ReservationResponse makeReservationResponse(Reservation reservation, Authentication authentication) {
+    public ReservationResponse makeReservationResponse(Reservation reservation, Authentication authentication) {
         ReservationResponse reservationResponse = new ReservationResponse(reservation);
         EntityModel<UserResponse> userResponseEntityModel = userService.getUserById(reservation.getOwner().getId(), authentication);
         reservationResponse.setOwner(userResponseEntityModel);

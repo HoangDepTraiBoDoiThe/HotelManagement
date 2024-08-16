@@ -22,4 +22,8 @@ public class Bill {
     @OneToOne(orphanRemoval = true)
     @JoinColumn(referencedColumnName = "id")
     private Reservation reservation;
+
+    public Bill(LocalDate date) {
+        this.date = date;
+    }
 }
