@@ -1,6 +1,5 @@
 package com.example.hotelmanagement.controller;
 
-import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.dto.request.RoomRequest;
 import com.example.hotelmanagement.dto.response.RoomResponse;
 import com.example.hotelmanagement.helper.MyHelper;
@@ -8,14 +7,12 @@ import com.example.hotelmanagement.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor

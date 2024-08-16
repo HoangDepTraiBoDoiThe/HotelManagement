@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final ReservationService reservationService;
-    private final RoomTypeRepository roomTypeRepository;
-    private final UtilityRepository utilityRepository;
+    private final RoomTypeService roomTypeService;
+    private final UtilityService utilityService;
     private final RoomTypeAssembler roomTypeAssembler;
     private final RoomAssembler roomAssembler;
 
@@ -57,8 +57,8 @@ public class RoomService {
     @Transactional
     public EntityModel<RoomResponse> createRoom(RoomRequest roomRequest, Authentication authentication) {
         Room newRoom = new Room(roomRequest.roomName(), roomRequest.roomDescription(), roomRequest.roomBasePrice(), roomRequest.roomFloor(), roomRequest.roomNumber(), RoomStatus.ROOM_AVAILABLE.name());
-        Set<RoomType> roomTypes = new HashSet<>(roomTypeRepository.findAllById(roomRequest.roomTypeIds()));
-        Set<Utility> utilities = new HashSet<>(utilityRepository.findAllById(roomRequest.utilityIds()));
+        Set<RoomType> roomTypes = roomRequest.roomTypeIds().stream().map(aLong -> roomTypeService.getRoomTypeById(aLong, authentication)).collect(Collectors.toSet());
+        Set<Utility> utilities = roomRequest.utilityIds().stream().map(aLong -> utilityService.getUtilityById(aLong, authentication)).collect(Collectors.toSet());
         newRoom.setRoomTypes(roomTypes);
         newRoom.setRoomUtilities(utilities);
         Room newCreatedRoom = roomRepository.save(newRoom);
@@ -75,7 +75,7 @@ public class RoomService {
         room.setRoomName(roomRequest.roomName());
         room.setRoomDescription(roomRequest.roomDescription());
         room.setRoomBasePrice(roomRequest.roomBasePrice());
-        Set<RoomType> roomTypes = new HashSet<>(roomTypeRepository.findAllById(roomRequest.roomTypeIds()));
+        Set<RoomType> roomTypes = roomRequest.roomTypeIds().stream().map(aLong -> roomTypeService.getRoomTypeById(aLong, authentication)).collect(Collectors.toSet());
         room.setRoomTypes(roomTypes);
         Room updatedRoom = roomRepository.save(room);
         
