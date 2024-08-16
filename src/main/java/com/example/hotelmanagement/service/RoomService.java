@@ -1,11 +1,10 @@
 package com.example.hotelmanagement.service;
 
-import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
+import com.example.hotelmanagement.controller.assembler.RoomAssembler;
 import com.example.hotelmanagement.controller.assembler.RoomTypeAssembler;
 import com.example.hotelmanagement.dto.request.RoomRequest;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
-import com.example.hotelmanagement.dto.response.RoomResponseAdmin;
-import com.example.hotelmanagement.dto.response.RoomResponseGuess;
+import com.example.hotelmanagement.dto.response.RoomResponse;
 import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.helper.RoomStatus;
@@ -19,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,58 +28,48 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository roomRepository;
+    private final ReservationService reservationService;
     private final RoomTypeRepository roomTypeRepository;
     private final UtilityRepository utilityRepository;
     private final RoomTypeAssembler roomTypeAssembler;
-    private final ReservationAssembler reservationAssembler;
+    private final RoomAssembler roomAssembler;
 
-    public List<RoomResponseAdmin> getAllRooms_Admin() {
+    public CollectionModel<EntityModel<RoomResponse>> getAllRooms(Authentication authentication) {
         List<Room> rooms = roomRepository.findAllWithReservations();
-        List<RoomResponseAdmin> roomResponseAdmins = rooms.stream().map(room -> new RoomResponseAdmin(room,
+        List<RoomResponse> roomResponse = rooms.stream().map(room -> new RoomResponse(
+                room,
                 roomTypeAssembler.toCollectionModel(room.getRoomTypes()),
                 null,
-                getCurrentReservationModel(room).orElse(null),
-                reservationAssembler.toCollectionModel(room.getReservations())
+                getCurrentReservationModel(room, authentication).orElse(null)
         )).collect(Collectors.toList());
         
-        return roomResponseAdmins;
-    }
-    public List<RoomResponseGuess> getAllRooms_Guess() {
-        List<Room> rooms = roomRepository.findAllWithReservations();
-        List<RoomResponseGuess> roomResponsesGuess = rooms.stream().map(room -> new RoomResponseGuess(room, roomTypeAssembler.toCollectionModel(room.getRoomTypes()), null)).collect(Collectors.toList());
-        
-        return roomResponsesGuess;
+        return roomAssembler.toCollectionModel(roomResponse, authentication);
     }
 
-    public RoomResponseAdmin getRoomById_Admin(Long id) {
+    public EntityModel<RoomResponse> getRoomById(Long id, Authentication authentication) {
         Room room = roomRepository.findWithReservationsById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
         CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponseModels = roomTypeAssembler.toCollectionModel(room.getRoomTypes());
-        CollectionModel<EntityModel<ReservationResponse>> reservationHistoryResponseModels = reservationAssembler.toCollectionModel(room.getReservations());
 
-        RoomResponseAdmin roomResponseAdmin = new RoomResponseAdmin(room, roomTypeResponseModels, null, getCurrentReservationModel(room).orElse(null), reservationHistoryResponseModels);
-        return roomResponseAdmin;
-    }
-    
-    public RoomResponseGuess getRoomById_Guess(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
-        CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponseModels = roomTypeAssembler.toCollectionModel(room.getRoomTypes());
-        RoomResponseGuess roomResponseAGuess = new RoomResponseGuess(room, roomTypeResponseModels, null);
-        return roomResponseAGuess;
+        RoomResponse RoomResponse = new RoomResponse(room, roomTypeResponseModels, null, getCurrentReservationModel(room, authentication).orElse(null));
+        return roomAssembler.toRoomModel(RoomResponse, authentication);
     }
 
     @Transactional
-    public RoomResponseAdmin createRoom(RoomRequest roomRequest) {
+    public EntityModel<RoomResponse> createRoom(RoomRequest roomRequest, Authentication authentication) {
         Room newRoom = new Room(roomRequest.roomName(), roomRequest.roomDescription(), roomRequest.roomBasePrice(), roomRequest.roomFloor(), roomRequest.roomNumber(), RoomStatus.ROOM_AVAILABLE.name());
         Set<RoomType> roomTypes = new HashSet<>(roomTypeRepository.findAllById(roomRequest.roomTypeIds()));
         Set<Utility> utilities = new HashSet<>(utilityRepository.findAllById(roomRequest.utilityIds()));
         newRoom.setRoomTypes(roomTypes);
         newRoom.setRoomUtilities(utilities);
         Room newCreatedRoom = roomRepository.save(newRoom);
-        return new RoomResponseAdmin(newCreatedRoom, roomTypeAssembler.toCollectionModel(roomTypes), null, null, null);
+
+        CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponseModels = roomTypeAssembler.toCollectionModel(newCreatedRoom.getRoomTypes());
+        RoomResponse RoomResponse = new RoomResponse(newCreatedRoom, roomTypeResponseModels, null, null);
+        return roomAssembler.toRoomModel(RoomResponse, authentication);
     }
 
     @Transactional
-    public RoomResponseAdmin updateRoomType(long id, RoomRequest roomRequest) {
+    public EntityModel<RoomResponse> updateRoomType(long id, RoomRequest roomRequest, Authentication authentication) {
         Room room = roomRepository.findWithReservationsById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
 
         room.setRoomName(roomRequest.roomName());
@@ -87,13 +77,11 @@ public class RoomService {
         room.setRoomBasePrice(roomRequest.roomBasePrice());
         Set<RoomType> roomTypes = new HashSet<>(roomTypeRepository.findAllById(roomRequest.roomTypeIds()));
         room.setRoomTypes(roomTypes);
-        // todo: room type images missing
-        
         Room updatedRoom = roomRepository.save(room);
+        
         CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponseModels = roomTypeAssembler.toCollectionModel(updatedRoom.getRoomTypes());
-        CollectionModel<EntityModel<ReservationResponse>> reservationHistoryResponseModels = reservationAssembler.toCollectionModel(updatedRoom.getReservations());
-        RoomResponseAdmin roomResponseAdmin = new RoomResponseAdmin(updatedRoom, roomTypeResponseModels, null, getCurrentReservationModel(updatedRoom).orElse(null), reservationHistoryResponseModels);
-        return roomResponseAdmin;
+        RoomResponse RoomResponse = new RoomResponse(updatedRoom, roomTypeResponseModels, null, getCurrentReservationModel(updatedRoom, authentication).orElse(null));
+        return roomAssembler.toRoomModel(RoomResponse, authentication);
     }
 
     public void deleteRoomType(Long id) {
@@ -101,10 +89,10 @@ public class RoomService {
         roomRepository.deleteById(id);
     }
 
-    private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Room room) {
+    private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Room room, Authentication authentication) {
         return room.getReservations().stream()
                 .filter(reservation -> reservation.getCheckOut().after(new Date()))
                 .findFirst()
-                .map(reservationAssembler::toModel);
+                .map(reservation -> reservationService.getReservation(reservation.getId(), authentication));
     }
 }

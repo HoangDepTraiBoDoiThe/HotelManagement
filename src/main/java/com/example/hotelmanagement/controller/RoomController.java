@@ -1,10 +1,8 @@
 package com.example.hotelmanagement.controller;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
-import com.example.hotelmanagement.controller.assembler.RoomAssembler;
 import com.example.hotelmanagement.dto.request.RoomRequest;
-import com.example.hotelmanagement.dto.response.RoomResponseAdmin;
-import com.example.hotelmanagement.dto.response.RoomResponseGuess;
+import com.example.hotelmanagement.dto.response.RoomResponse;
 import com.example.hotelmanagement.helper.MyHelper;
 import com.example.hotelmanagement.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -23,44 +21,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomService roomService;
-    private final RoomAssembler roomAssembler;
     private final MyHelper myHelper;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRoomById(@PathVariable long id, Authentication authentication) {
-        List<String> roleStrings = myHelper.getUserApplicationRole(authentication);
-        if (roleStrings.contains(ApplicationRole.ADMIN.name())) {
-            RoomResponseAdmin roomResponseAdmin = roomService.getRoomById_Admin(id);
-            return ResponseEntity.ok(roomAssembler.toRoomModel(roomResponseAdmin));
-        }
-        RoomResponseGuess roomResponseGuess = roomService.getRoomById_Guess(id);
-        return ResponseEntity.ok(roomAssembler.toRoomModel(roomResponseGuess));
+        EntityModel<RoomResponse> roomResponseAdminEntityModel = roomService.getRoomById(id, authentication);
+        return ResponseEntity.ok(roomResponseAdminEntityModel);
     }
 
     @GetMapping
     public ResponseEntity<?> getRoomAllRooms(Authentication authentication) {
-        List<String> roles = myHelper.getUserApplicationRole(authentication);
-        if (roles.contains(ApplicationRole.ADMIN.name())){
-            List<RoomResponseAdmin> roomResponseAdmins = roomService.getAllRooms_Admin();
-            CollectionModel<EntityModel<RoomResponseAdmin>> roomAssemblerCollectionModel_Admin = roomAssembler.toCollectionModel(roomResponseAdmins);
-            roomAssemblerCollectionModel_Admin.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomAllRooms(authentication)).withSelfRel());
-            return ResponseEntity.ok(roomAssemblerCollectionModel_Admin);
-        }
-        List<RoomResponseGuess> allRoomsGuess = roomService.getAllRooms_Guess();
-        CollectionModel<EntityModel<RoomResponseGuess>> roomAssemblerCollectionModel_Guess = roomAssembler.toCollectionModel(allRoomsGuess);
-        roomAssemblerCollectionModel_Guess.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomAllRooms(authentication)).withSelfRel());
-        return ResponseEntity.ok(roomAssemblerCollectionModel_Guess);
+        CollectionModel<EntityModel<RoomResponse>> responseEntityModels = roomService.getAllRooms(authentication);
+        return ResponseEntity.ok(responseEntityModels);
     }
 
     @PostMapping
-    public ResponseEntity<?> createRoom(@RequestBody @Validated RoomRequest roomRequest) {
-        RoomResponseAdmin newRoom = roomService.createRoom(roomRequest);
-        return ResponseEntity.ok(roomAssembler.toRoomModel(newRoom));
+    public ResponseEntity<?> createRoom(@RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
+        EntityModel<RoomResponse> roomResponseAdminEntityModel = roomService.createRoom(roomRequest, authentication);
+        return ResponseEntity.ok(roomResponseAdminEntityModel);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateRoom(@PathVariable long id, @RequestBody @Validated RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomAssembler.toRoomModel(roomService.updateRoomType(id, roomRequest)));
+    public ResponseEntity<?> updateRoom(@PathVariable long id, @RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
+        return ResponseEntity.ok(roomService.updateRoomType(id, roomRequest, authentication));
     }
 
     @DeleteMapping("/{id}")
