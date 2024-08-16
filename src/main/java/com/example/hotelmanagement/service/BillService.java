@@ -38,7 +38,7 @@ public class BillService {
     }
     
     public EntityModel<BillResponse> updateBill(long bill_id, BillRequest billRequest, Authentication authentication) {
-        Bill bill = billRepository.findById(bill_id).orElseThrow(() -> new ResourceNotFoundException(String.format("Bill with id %d not found", id)));
+        Bill bill = billRepository.findById(bill_id).orElseThrow(() -> new ResourceNotFoundException(String.format("Bill with id %d not found", bill_id)));
         bill.setDate(billRequest.getDate());
         
         Bill newCreatedBill = billRepository.save(bill);
