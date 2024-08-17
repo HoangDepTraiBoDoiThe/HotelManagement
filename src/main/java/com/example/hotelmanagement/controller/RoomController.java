@@ -1,7 +1,8 @@
 package com.example.hotelmanagement.controller;
 
 import com.example.hotelmanagement.dto.request.RoomRequest;
-import com.example.hotelmanagement.dto.response.RoomResponse;
+import com.example.hotelmanagement.dto.response.room.RoomResponse_Basic;
+import com.example.hotelmanagement.dto.response.room.RoomResponse_Full;
 import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -23,19 +24,19 @@ public class RoomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRoomById(@PathVariable long id, Authentication authentication) {
-        EntityModel<RoomResponse> roomResponseAdminEntityModel = roomService.getRoomById(id, authentication);
+        EntityModel<RoomResponse_Full> roomResponseAdminEntityModel = roomService.getRoomById(id, authentication);
         return ResponseEntity.ok(roomResponseAdminEntityModel);
     }
 
     @GetMapping
     public ResponseEntity<?> getRoomAllRooms(Authentication authentication) {
-        CollectionModel<EntityModel<RoomResponse>> responseEntityModels = roomService.getAllRooms(authentication);
+        CollectionModel<EntityModel<RoomResponse_Basic>> responseEntityModels = roomService.getAllRooms(authentication);
         return ResponseEntity.ok(responseEntityModels);
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createRoom(@RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
-        EntityModel<RoomResponse> roomResponseAdminEntityModel = roomService.createRoom(roomRequest, authentication);
+        EntityModel<RoomResponse_Full> roomResponseAdminEntityModel = roomService.createRoom(roomRequest, authentication);
         return ResponseEntity.ok(roomResponseAdminEntityModel);
     }
 

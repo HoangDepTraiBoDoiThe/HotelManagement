@@ -1,5 +1,8 @@
-package com.example.hotelmanagement.dto.response;
+package com.example.hotelmanagement.dto.response.room;
 
+import com.example.hotelmanagement.dto.response.ReservationResponse;
+import com.example.hotelmanagement.dto.response.RoomImageResponse;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Full;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Minimal;
 import com.example.hotelmanagement.model.Room;
 import lombok.AllArgsConstructor;
@@ -16,7 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomResponse extends ResponseBase{
+public class RoomResponse_Full extends RoomResponse_Basic {
     Number roomNumber;
     String roomStatus;
     BigDecimal roomBasePrice;
@@ -26,8 +29,8 @@ public class RoomResponse extends ResponseBase{
     CollectionModel<?> roomImages;
     EntityModel<ReservationResponse> currentReservation;
 
-    public RoomResponse(Room room, List<EntityModel<RoomTypeResponse>> roomTypeResponses, List<EntityModel<UtilityResponse_Minimal>> roomUtilities, CollectionModel<EntityModel<RoomImageResponse>> roomImages, EntityModel<ReservationResponse> currentReservation) {
-        super(room.getId());
+    public RoomResponse_Full(Room room, List<?> roomTypeResponses, List<?> roomUtilities, CollectionModel<EntityModel<RoomImageResponse>> roomImages, EntityModel<ReservationResponse> currentReservation) {
+        super(room, roomImages, currentReservation);
         this.roomNumber = room.getRoomNumber();
         this.roomTypes = roomTypeResponses;
         this.roomUtilities = roomUtilities;

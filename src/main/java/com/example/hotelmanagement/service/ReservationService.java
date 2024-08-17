@@ -1,12 +1,7 @@
 package com.example.hotelmanagement.service;
 
 import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
-import com.example.hotelmanagement.dto.response.BillResponse;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
-import com.example.hotelmanagement.dto.response.RoomResponse;
-import com.example.hotelmanagement.dto.response.UserResponse;
-import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Basic;
-import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Minimal;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.model.Reservation;
@@ -21,7 +16,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

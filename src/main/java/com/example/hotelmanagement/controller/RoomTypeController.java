@@ -1,21 +1,17 @@
 package com.example.hotelmanagement.controller;
 
-import com.example.hotelmanagement.controller.assembler.RoomTypeAssembler;
 import com.example.hotelmanagement.dto.request.RoomTypeRequest;
-import com.example.hotelmanagement.dto.response.RoleResponse;
-import com.example.hotelmanagement.dto.response.RoomTypeResponse;
-import com.example.hotelmanagement.model.RoomType;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Basic;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Full;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Minimal;
 import com.example.hotelmanagement.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,13 +26,13 @@ public class RoomTypeController {
     
     @GetMapping
     public ResponseEntity<?> getRoomAllTypes(Authentication authentication) {
-        CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponses = roomTypeService.getAllRoomTypes(authentication);
+        CollectionModel<EntityModel<RoomTypeResponse_Basic>> roomTypeResponses = roomTypeService.getAllRoomTypes(authentication);
         return ResponseEntity.ok(roomTypeResponses);
     }
     
     @PostMapping("/create")
     public ResponseEntity<?> createRoomType(@RequestBody @Validated RoomTypeRequest roomTypeRequest, Authentication authentication) {
-        EntityModel<RoomTypeResponse> roomTypeServiceRoomType = roomTypeService.createRoomType(roomTypeRequest, authentication);
+        EntityModel<RoomTypeResponse_Minimal> roomTypeServiceRoomType = roomTypeService.createRoomType(roomTypeRequest, authentication);
         return ResponseEntity.ok(roomTypeServiceRoomType);
     }
     

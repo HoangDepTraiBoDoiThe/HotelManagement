@@ -1,5 +1,6 @@
-package com.example.hotelmanagement.dto.response;
+package com.example.hotelmanagement.dto.response.room.roomType;
 
+import com.example.hotelmanagement.dto.response.ResponseBase;
 import com.example.hotelmanagement.model.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,21 +14,15 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomTypeResponse extends ResponseBase{
-    String roomTypeName;
+public class RoomTypeResponse_Basic extends RoomTypeResponse_Minimal {
     String description;
     BigDecimal basePrice;
     Number roomCapability;
-    CollectionModel<?> utilities;
-    CollectionModel<?> rooms;
 
-    public RoomTypeResponse(RoomType roomType, CollectionModel<?> utilities, CollectionModel<?> rooms) {
-        super(roomType.getId());
-        this.roomTypeName = roomType.getTypeName();
+    public RoomTypeResponse_Basic(RoomType roomType) {
+        super(roomType);
         this.description = roomType.getDescription();
         this.basePrice = roomType.getBasePrice();
         this.roomCapability = roomType.getCapacity();
-        this.utilities = utilities;
-        this.rooms = rooms;
     }
 }

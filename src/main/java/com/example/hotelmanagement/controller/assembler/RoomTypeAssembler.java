@@ -2,7 +2,6 @@ package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.controller.RoomTypeController;
 import com.example.hotelmanagement.dto.response.ResponseBase;
-import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;

@@ -2,7 +2,6 @@ package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.controller.RoomController;
 import com.example.hotelmanagement.dto.response.ResponseBase;
-import com.example.hotelmanagement.dto.response.RoomResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
