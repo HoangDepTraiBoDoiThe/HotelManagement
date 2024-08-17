@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.dto.request;
 
+import com.example.hotelmanagement.model.Utility;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -24,4 +25,8 @@ public class UtilityRequest {
     @PositiveOrZero(message = "Price must be positive or zero(Free)")
     BigDecimal baseUtilityPrice;
     boolean status = true;
+
+    public Utility toModel() {
+        return new Utility(this.getUtilityName(), this.getBaseUtilityPrice(), this.getUtilityDescription(), this.status);
+    }
 }

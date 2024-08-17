@@ -2,7 +2,7 @@ package com.example.hotelmanagement.controller;
 
 import com.example.hotelmanagement.dto.request.RoomRequest;
 import com.example.hotelmanagement.dto.response.RoomResponse;
-import com.example.hotelmanagement.helper.MyHelper;
+import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/rooms")
 public class RoomController {
     private final RoomService roomService;
-    private final MyHelper myHelper;
+    private final StaticHelper staticHelper;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRoomById(@PathVariable long id, Authentication authentication) {

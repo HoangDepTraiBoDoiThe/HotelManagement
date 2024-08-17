@@ -6,6 +6,8 @@ import com.example.hotelmanagement.dto.request.BillRequest;
 import com.example.hotelmanagement.dto.response.BillResponse;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
+import com.example.hotelmanagement.helper.ServiceHelper;
+import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.model.Bill;
 import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.model.repository.BillRepository;
@@ -19,12 +21,11 @@ import org.springframework.stereotype.Service;
 public class BillService {
     private final BillRepository billRepository;
     private final ReservationService reservationService;
-    private final ReservationAssembler reservationAssembler;
-    private final BillAssembler billAssembler;
+    private final ServiceHelper serviceHelper;
     
     public EntityModel<BillResponse> getBillById(long id, Authentication authentication) {
         Bill bill = billRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Bill with id %d not found", id)));
-        return makeBillResponse(bill, authentication);
+        return serviceHelper.makeBillResponse(bill, authentication);
     }
     
     public EntityModel<BillResponse> createBill(long reservation_id, BillRequest billRequest, Authentication authentication) {
@@ -34,7 +35,7 @@ public class BillService {
         
         Bill newCreatedBill = billRepository.save(newBill);
         
-        return makeBillResponse(newCreatedBill, authentication);
+        return serviceHelper.makeBillResponse(newCreatedBill, authentication);
     }
     
     public EntityModel<BillResponse> updateBill(long bill_id, BillRequest billRequest, Authentication authentication) {
@@ -42,7 +43,7 @@ public class BillService {
         bill.setDate(billRequest.getDate());
         
         Bill newCreatedBill = billRepository.save(bill);
-        return makeBillResponse(newCreatedBill, authentication);
+        return serviceHelper.makeBillResponse(newCreatedBill, authentication);
     }
 
     public void deleteBill(long id) {
@@ -50,10 +51,4 @@ public class BillService {
         billRepository.delete(bill);
     }
 
-    public EntityModel<BillResponse> makeBillResponse(Bill bill, Authentication authentication) {
-        if (bill == null) return null;
-        EntityModel<ReservationResponse> responseEntityModel = reservationService.makeReservationResponse(bill.getReservation(), authentication);
-        BillResponse billResponse = new BillResponse(bill, reservationAssembler.toModel(new BillResponse(bill, responseEntityModel), authentication));
-        return billAssembler.toModel(billResponse, authentication);
-    }
 }

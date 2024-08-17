@@ -1,19 +1,16 @@
 package com.example.hotelmanagement.service;
 
 import com.example.hotelmanagement.controller.assembler.RoomAssembler;
-import com.example.hotelmanagement.controller.assembler.RoomTypeAssembler;
 import com.example.hotelmanagement.dto.request.RoomRequest;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.dto.response.RoomResponse;
 import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
-import com.example.hotelmanagement.helper.RoomStatus;
+import com.example.hotelmanagement.constants.RoomStatus;
 import com.example.hotelmanagement.model.Room;
 import com.example.hotelmanagement.model.RoomType;
 import com.example.hotelmanagement.model.Utility;
 import com.example.hotelmanagement.model.repository.RoomRepository;
-import com.example.hotelmanagement.model.repository.RoomTypeRepository;
-import com.example.hotelmanagement.model.repository.UtilityRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;

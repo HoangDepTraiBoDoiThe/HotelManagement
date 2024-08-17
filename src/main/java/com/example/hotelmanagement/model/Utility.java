@@ -39,6 +39,13 @@ public class Utility {
     @Column(nullable = false)
     private boolean utilityStatus;
 
+    public Utility(String utilityName, BigDecimal utilityBasePrice, String utilityDescription, boolean utilityStatus) {
+        this.utilityName = utilityName;
+        this.utilityBasePrice = utilityBasePrice;
+        this.utilityDescription = utilityDescription;
+        this.utilityStatus = utilityStatus;
+    }
+
     @ManyToMany(mappedBy = "additionRoomUtility")
     private Set<Reservation> reservations = new HashSet<>();
 

@@ -50,9 +50,10 @@ public class UtilityService {
         return utility;
     }
     
-    public EntityModel<UtilityResponse_Full> createUtility(Utility utility, Authentication authentication) {
-        Utility newCreatedUtility = utilityRepository.save(utility);
-        return makeUtilityResponse(UtilityResponse_Full.class, newCreatedUtility, authentication);
+    public EntityModel<UtilityResponse_Basic> createUtility(UtilityRequest utilityRequest, Authentication authentication) {
+        Utility newUtility = utilityRequest.toModel();
+        Utility newCreatedUtility = utilityRepository.save(newUtility);
+        return makeUtilityResponse(UtilityResponse_Basic.class, newCreatedUtility, authentication);
     }
     
     public EntityModel<UtilityResponse_Full> updateUtility(long utilityId, UtilityRequest newUtilityData, Authentication authentication) {

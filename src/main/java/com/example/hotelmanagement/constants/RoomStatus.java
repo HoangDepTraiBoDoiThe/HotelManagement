@@ -1,4 +1,4 @@
-package com.example.hotelmanagement.helper;
+package com.example.hotelmanagement.constants;
 
 public enum RoomStatus {
     ROOM_AVAILABLE,

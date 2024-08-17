@@ -1,16 +1,12 @@
 package com.example.hotelmanagement.model;
 
-import com.example.hotelmanagement.helper.RoomStatus;
+import com.example.hotelmanagement.constants.RoomStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
