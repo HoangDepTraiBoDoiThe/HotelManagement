@@ -81,8 +81,9 @@ public class ServiceHelper {
     public EntityModel<RoomResponse> makeRoomResponse(Room room, Authentication authentication) {
         if (room == null) return null;
         List<EntityModel<RoomTypeResponse>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(roomType, authentication)).toList();
+        List<EntityModel<UtilityResponse_Minimal>> utilityResponseModels = room.getRoomUtilities().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).toList();
         EntityModel<ReservationResponse> currentReservation = getCurrentReservationModel(room.getReservations(), authentication).orElse(null);
-        RoomResponse roomResponse = new RoomResponse(room, roomTypeResponseModels, null, currentReservation);
+        RoomResponse roomResponse = new RoomResponse(room, roomTypeResponseModels, utilityResponseModels, null, currentReservation);
         return roomAssembler.toRoomModel(roomResponse, authentication);
     }
     private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Set<Reservation> reservations, Authentication authentication) {

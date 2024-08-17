@@ -9,10 +9,10 @@ import java.util.List;
 
 public record RoomRequest(
         @PositiveOrZero(message = "Room number must be greater than or equal to 0")
-        Number roomNumber,
+        Integer roomNumber,
 
         @PositiveOrZero(message = "Room floor must be greater than or equal to 0")
-        Number roomFloor,
+        Integer roomFloor,
         
         List<Long> roomTypeIds,
         List<Long> utilityIds,

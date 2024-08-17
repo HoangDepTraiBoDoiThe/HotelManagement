@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class RoomService {
@@ -28,19 +29,19 @@ public class RoomService {
     private final ServiceHelper serviceHelper;
 
     public CollectionModel<EntityModel<RoomResponse>> getAllRooms(Authentication authentication) {
-        List<Room> rooms = roomRepository.findAllWithReservations();
+        List<Room> rooms = roomRepository.findAll();
         CollectionModel<EntityModel<RoomResponse>> entityModelCollectionModels = rooms.stream().map(room -> serviceHelper.makeRoomResponse(room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
         
         return entityModelCollectionModels;
     }
 
     public EntityModel<RoomResponse> getRoomById(Long id, Authentication authentication) {
-        Room room = roomRepository.findWithReservationsById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id)));
+        Room room = roomRepository.findWithRoomTypesById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id)));
         return serviceHelper.makeRoomResponse(room, authentication);
     }
     
     public Room getRoomById_entity(Long id, Authentication authentication, boolean shouldThrowIfNull) {
-        Room room = roomRepository.findWithReservationsById(id).orElse(null);
+        Room room = roomRepository.findWithRoomTypesById(id).orElse(null);
         if (room == null && shouldThrowIfNull) throw new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id));
         return room;
     }
@@ -59,7 +60,7 @@ public class RoomService {
 
     @Transactional
     public EntityModel<RoomResponse> updateRoomType(long id, RoomRequest roomRequest, Authentication authentication) {
-        Room room = roomRepository.findWithReservationsById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+        Room room = roomRepository.findWithRoomTypesById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
 
         room.setRoomName(roomRequest.roomName());
         room.setRoomDescription(roomRequest.roomDescription());
