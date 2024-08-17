@@ -36,7 +36,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> userRegister(@RequestBody RegisterRequest request) throws AuthenticationException {
         User newUser = request.toUser(passwordEncoder);
-        userService.createUser(newUser);
+        userService.createUser(newUser, null);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new RegisterResponse("User created successfully"));
     }
