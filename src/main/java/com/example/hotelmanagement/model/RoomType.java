@@ -1,15 +1,10 @@
 package com.example.hotelmanagement.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -37,12 +32,14 @@ public class RoomType {
         this.basePrice = basePrice;
     }
 
-    @ManyToMany(mappedBy = "roomTypes")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "roomTypes", fetch = FetchType.LAZY)
     private Set<Room> rooms = new HashSet<>();
-    
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Room_Type_Utilities", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
     private Set<Utility> roomTypeUtilities = new HashSet<>();
-    
-    
 }

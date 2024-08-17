@@ -1,16 +1,7 @@
 package com.example.hotelmanagement.model;
 
-import com.example.hotelmanagement.model.Room;
-import com.example.hotelmanagement.model.User;
-import com.example.hotelmanagement.service.RoomService;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -31,18 +22,26 @@ public class Reservation {
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "Owner_Id")
     private User owner;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany
     @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"))
     private Set<Room> rooms = new HashSet<>();
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany
     @JoinTable(name = "Reservation_Room_Utilities", joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomUtility_id", referencedColumnName = "id"))
     private Set<Utility> additionRoomUtility = new HashSet<>();
-    
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "reservation")
     private Bill reservationBill;
     

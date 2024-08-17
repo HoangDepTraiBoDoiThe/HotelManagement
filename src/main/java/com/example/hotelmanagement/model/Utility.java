@@ -1,17 +1,10 @@
 package com.example.hotelmanagement.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -42,12 +35,18 @@ public class Utility {
         this.utilityStatus = utilityStatus;
     }
 
-    @ManyToMany(mappedBy = "additionRoomUtility")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "additionRoomUtility", fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
 
-    @ManyToMany(mappedBy = "roomUtilities")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "roomUtilities", fetch = FetchType.LAZY)
     private Set<Room> rooms = new HashSet<>();
-
-    @ManyToMany(mappedBy = "roomTypeUtilities")
+    
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "roomTypeUtilities", fetch = FetchType.LAZY)
     private Set<RoomType> roomTypes = new HashSet<>();
 }
