@@ -19,20 +19,15 @@ import java.util.Set;
 public class RoomType {
     @Id
     @GeneratedValue
-    private long Id;
+    private long id;
 
-    @NotBlank
-    @Size(max = 20, message = "20 characters limited. Room type name should be short and directive, any more information can be put in the description.")
+    @Column(length = 50,  nullable = false)
     private String typeName;
     private String description;
-    
-    @NotBlank
-    @Positive
-    @Min(1)
+
+    @Column(nullable = false)
     private Number capacity;
-    
-    @NotBlank
-    @PositiveOrZero
+    @Column(nullable = false)
     private BigDecimal basePrice;
 
     public RoomType(String typeName, String description, Number capacity, BigDecimal basePrice) {
@@ -45,7 +40,7 @@ public class RoomType {
     @ManyToMany(mappedBy = "roomTypes")
     private Set<Room> rooms = new HashSet<>();
     
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "Room_Type_Utilities", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
     private Set<Utility> roomTypeUtilities = new HashSet<>();
     

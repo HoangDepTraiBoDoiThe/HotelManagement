@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,12 +80,14 @@ public class ServiceHelper {
 
     public EntityModel<RoomResponse> makeRoomResponse(Room room, Authentication authentication) {
         if (room == null) return null;
-        CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(roomType, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
-        RoomResponse roomResponse = new RoomResponse(room, roomTypeResponseModels, null, getCurrentReservationModel(room, authentication).orElse(null));
+        List<EntityModel<RoomTypeResponse>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(roomType, authentication)).toList();
+        EntityModel<ReservationResponse> currentReservation = getCurrentReservationModel(room.getReservations(), authentication).orElse(null);
+        RoomResponse roomResponse = new RoomResponse(room, roomTypeResponseModels, null, currentReservation);
         return roomAssembler.toRoomModel(roomResponse, authentication);
     }
-    private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Room room, Authentication authentication) {
-        return room.getReservations().stream()
+    private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Set<Reservation> reservations, Authentication authentication) {
+        if (reservations == null) return Optional.empty();
+        return reservations.stream()
                 .filter(reservation -> reservation.getCheckOut().after(new Date()))
                 .findFirst()
                 .map(reservation -> makeReservationResponse(reservation, authentication));

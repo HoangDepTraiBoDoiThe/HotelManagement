@@ -40,11 +40,11 @@ public class Reservation {
     private User owner;
 
     @ManyToMany
-    @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "reservatino_is", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"))
+    @JoinTable(name = "Room_Reservation", joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"))
     private Set<Room> rooms = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "Reservation_Room_Utilities", joinColumns = @JoinColumn(name = "reservatino_is", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomUtility_id", referencedColumnName = "id"))
+    @JoinTable(name = "Reservation_Room_Utilities", joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roomUtility_id", referencedColumnName = "id"))
     private Set<Utility> additionRoomUtility = new HashSet<>();
     
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "reservation")

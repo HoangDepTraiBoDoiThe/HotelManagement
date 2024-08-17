@@ -9,6 +9,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -16,17 +17,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class RoomResponse extends ResponseBase{
     Number roomNumber;
-    CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponses;
+    List<?> roomTypes;
     String roomStatus;
     BigDecimal roomBasePrice;
     String roomDescription;
-    CollectionModel<EntityModel<RoomImageResponse>> roomImages;
+    CollectionModel<?> roomImages;
     EntityModel<ReservationResponse> currentReservation;
 
-    public RoomResponse(Room room, CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponses, CollectionModel<EntityModel<RoomImageResponse>> roomImages, EntityModel<ReservationResponse> currentReservation) {
+    public RoomResponse(Room room, List<EntityModel<RoomTypeResponse>> roomTypeResponses, CollectionModel<EntityModel<RoomImageResponse>> roomImages, EntityModel<ReservationResponse> currentReservation) {
         super(room.getId());
         this.roomNumber = room.getRoomNumber();
-        this.roomTypeResponses = roomTypeResponses;
+        this.roomTypes = roomTypeResponses;
         this.roomStatus = room.getRoomStatus();
         this.roomBasePrice = room.getRoomBasePrice();
         this.roomDescription = room.getRoomDescription();

@@ -8,11 +8,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record RoomRequest(
-        @NotBlank(message = "Room type name is required")
         @PositiveOrZero(message = "Room number must be greater than or equal to 0")
         Number roomNumber,
 
-        @NotBlank(message = "Room floor name is required")
         @PositiveOrZero(message = "Room floor must be greater than or equal to 0")
         Number roomFloor,
         
@@ -21,7 +19,6 @@ public record RoomRequest(
         
         boolean isReserved,
         
-        @NotBlank
         @PositiveOrZero(message = "Base price must be greater than or equal to 0")
         BigDecimal roomBasePrice,
         
@@ -29,7 +26,6 @@ public record RoomRequest(
         @Size(max = 50, message = "Room name must be less than 50 characters")
         String roomName,
         
-        @NotBlank(message = "Description is required")
         @Size(max = 100, message = "Description must be less than 100 characters")
         String roomDescription,
         

@@ -16,7 +16,6 @@ import java.util.stream.StreamSupport;
 @Component
 @RequiredArgsConstructor
 public class RoomAssembler {
-    private final RoomTypeAssembler roomTypeAssembler;
     public <T extends ResponseBase> EntityModel<T> toRoomModel(T responseDto, Authentication authentication) {
         return EntityModel.of(responseDto,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomById(responseDto.getId(), null)).withSelfRel().withType("GET"),

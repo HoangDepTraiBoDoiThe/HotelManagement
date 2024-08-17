@@ -43,7 +43,7 @@ public class RoomTypeService {
     @Transactional
     public EntityModel<RoomTypeResponse> createRoomType(RoomTypeRequest roomTypeRequest, Authentication authentication) {
         RoomType newRoomType = new RoomType(roomTypeRequest.roomTypeName(), roomTypeRequest.description(), roomTypeRequest.roomCapability(), roomTypeRequest.basePrice());
-        Set<Utility> utilities = roomTypeRequest.utilityIds().stream().map((Long utilityId) -> utilityService.getUtilityById_entity(utilityId, authentication, false)).collect(Collectors.toSet());
+        Set<Utility> utilities = roomTypeRequest.utilityIds().stream().map((Long utilityId) -> utilityService.getUtilityById_entity(utilityId, authentication, true)).collect(Collectors.toSet());
         newRoomType.setRoomTypeUtilities(utilities);
 
         RoomType newCreatedRoomType = roomTypeRepository.save(newRoomType);

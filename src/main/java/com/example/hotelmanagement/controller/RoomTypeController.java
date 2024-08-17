@@ -34,18 +34,18 @@ public class RoomTypeController {
         return ResponseEntity.ok(roomTypeResponses);
     }
     
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createRoomType(@RequestBody @Validated RoomTypeRequest roomTypeRequest, Authentication authentication) {
         EntityModel<RoomTypeResponse> roomTypeServiceRoomType = roomTypeService.createRoomType(roomTypeRequest, authentication);
         return ResponseEntity.ok(roomTypeServiceRoomType);
     }
     
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<?> updateRoomType(@PathVariable long id, @RequestBody @Validated RoomTypeRequest roomTypeRequest, Authentication authentication) {
         return ResponseEntity.ok(roomTypeService.updateRoomType(id, roomTypeRequest, authentication));
     }
     
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<?> deleteRoomType(@PathVariable long id) {
         roomTypeService.deleteRoomType(id);
         return ResponseEntity.ok("Room type deleted successfully");
