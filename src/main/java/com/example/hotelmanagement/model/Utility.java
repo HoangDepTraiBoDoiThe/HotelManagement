@@ -23,17 +23,13 @@ public class Utility {
     @GeneratedValue
     private long id;
 
-    @NotBlank
-    @Column(nullable = false)
-    @Size(max = 20, message = "20 characters limited. Name should be short and directive, any more information can be put in the description.")
+    @Column(length = 100, nullable = false)
     private String utilityName;
 
-    @NotBlank
-    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal utilityBasePrice;
 
-    @Size(max = 2000)
+    @Column(length = 2000)
     private String utilityDescription;
 
     @Column(nullable = false)

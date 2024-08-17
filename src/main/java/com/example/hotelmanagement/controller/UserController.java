@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
-    private final UserAssembler userAssembler;
     
     @GetMapping("{id}")
     public ResponseEntity<EntityModel<UserResponse>> getUserById(@PathVariable long id, Authentication authentication) {
@@ -31,14 +30,12 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<EntityModel<UserResponse>> createUser(@RequestBody User newUser, Authentication authentication) {
-        User createdUser = userService.createUser(newUser);
-        return ResponseEntity.ok(userAssembler.toModel(new UserResponse(createdUser), authentication));
+        return ResponseEntity.ok(userService.createUser(newUser, null));
     }
     
     @PutMapping("{id}")
     public ResponseEntity<EntityModel<UserResponse>> updateUser(@PathVariable long id, User newUserData, Authentication authentication) {
-        User updatedUser = userService.updateUser(id, newUserData);
-        return ResponseEntity.ok(userAssembler.toModel(new UserResponse(updatedUser), authentication));
+        return ResponseEntity.ok(userService.updateUser(id, newUserData, authentication));
 
     }
     

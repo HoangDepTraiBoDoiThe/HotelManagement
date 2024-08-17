@@ -1,12 +1,10 @@
 package com.example.hotelmanagement.service;
 
-import com.example.hotelmanagement.controller.assembler.RoomAssembler;
 import com.example.hotelmanagement.dto.request.RoomRequest;
-import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.dto.response.RoomResponse;
-import com.example.hotelmanagement.dto.response.RoomTypeResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.constants.RoomStatus;
+import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.model.Room;
 import com.example.hotelmanagement.model.RoomType;
 import com.example.hotelmanagement.model.Utility;
@@ -25,21 +23,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final ReservationService reservationService;
     private final RoomTypeService roomTypeService;
     private final UtilityService utilityService;
-    private final RoomAssembler roomAssembler;
+    private final ServiceHelper serviceHelper;
 
     public CollectionModel<EntityModel<RoomResponse>> getAllRooms(Authentication authentication) {
         List<Room> rooms = roomRepository.findAllWithReservations();
-        CollectionModel<EntityModel<RoomResponse>> entityModelCollectionModels = rooms.stream().map(room -> makeRoomResponse(room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+        CollectionModel<EntityModel<RoomResponse>> entityModelCollectionModels = rooms.stream().map(room -> serviceHelper.makeRoomResponse(room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
         
         return entityModelCollectionModels;
     }
 
     public EntityModel<RoomResponse> getRoomById(Long id, Authentication authentication) {
         Room room = roomRepository.findWithReservationsById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id)));
-        return makeRoomResponse(room, authentication);
+        return serviceHelper.makeRoomResponse(room, authentication);
     }
     
     public Room getRoomById_entity(Long id, Authentication authentication, boolean shouldThrowIfNull) {
@@ -57,7 +54,7 @@ public class RoomService {
         newRoom.setRoomUtilities(utilities);
         Room newCreatedRoom = roomRepository.save(newRoom);
 
-        return makeRoomResponse(newCreatedRoom, authentication);
+        return serviceHelper.makeRoomResponse(newCreatedRoom, authentication);
     }
 
     @Transactional
@@ -71,25 +68,11 @@ public class RoomService {
         room.setRoomTypes(roomTypes);
         Room updatedRoom = roomRepository.save(room);
         
-        return makeRoomResponse(updatedRoom, authentication);
+        return serviceHelper.makeRoomResponse(updatedRoom, authentication);
     }
 
     public void deleteRoomType(Long id) {
         roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
         roomRepository.deleteById(id);
-    }
-
-    private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Room room, Authentication authentication) {
-        return room.getReservations().stream()
-                .filter(reservation -> reservation.getCheckOut().after(new Date()))
-                .findFirst()
-                .map(reservation -> reservationService.getReservation(reservation.getId(), authentication));
-    }
-
-    public EntityModel<RoomResponse> makeRoomResponse(Room room, Authentication authentication) {
-        if (room == null) return null;
-        CollectionModel<EntityModel<RoomTypeResponse>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> roomTypeService.makeRoomTypeResponse(roomType, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
-        RoomResponse roomResponse = new RoomResponse(room, roomTypeResponseModels, null, getCurrentReservationModel(room, authentication).orElse(null));
-        return roomAssembler.toRoomModel(roomResponse, authentication);
     }
 }

@@ -2,11 +2,9 @@ package com.example.hotelmanagement.service;
 
 import com.example.hotelmanagement.controller.assembler.RoomTypeAssembler;
 import com.example.hotelmanagement.dto.request.RoomTypeRequest;
-import com.example.hotelmanagement.dto.response.RoomResponse;
 import com.example.hotelmanagement.dto.response.RoomTypeResponse;
-import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Basic;
-import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Minimal;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
+import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.model.RoomType;
 import com.example.hotelmanagement.model.Utility;
 import com.example.hotelmanagement.model.repository.RoomTypeRepository;
@@ -26,18 +24,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomTypeService {
     private final RoomTypeRepository roomTypeRepository;
-    private final RoomTypeAssembler roomTypeAssembler;
     private final UtilityService utilityService;
-    private final RoomService roomService;
-    
+    private final ServiceHelper serviceHelper;
+
     public CollectionModel<EntityModel<RoomTypeResponse>> getAllRoomTypes(Authentication authentication) {
         List<RoomType> roomTypes = roomTypeRepository.findAll();
-        return roomTypes.stream().map(roomType -> makeRoomTypeResponse(roomType, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+        return roomTypes.stream().map(roomType -> serviceHelper.makeRoomTypeResponse(roomType, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
     }
     
     public EntityModel<RoomTypeResponse> getRoomTypeById(Long id, Authentication authentication) {
         RoomType roomType = roomTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room type not found"));
-        return makeRoomTypeResponse(roomType, authentication);
+        return serviceHelper.makeRoomTypeResponse(roomType, authentication);
     }   
     public RoomType getRoomTypeById_entity(Long id, Authentication authentication) {
         return roomTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room type not found"));
@@ -50,7 +47,7 @@ public class RoomTypeService {
         newRoomType.setRoomTypeUtilities(utilities);
 
         RoomType newCreatedRoomType = roomTypeRepository.save(newRoomType);
-        return makeRoomTypeResponse(newCreatedRoomType, authentication);
+        return serviceHelper.makeRoomTypeResponse(newCreatedRoomType, authentication);
     }
 
     @Transactional
@@ -64,7 +61,7 @@ public class RoomTypeService {
         Set<Utility> utilities = new HashSet<>(utilityService.getAllByIds_entity(roomTypeRequest.utilityIds(), authentication, false));
         roomType.setRoomTypeUtilities(utilities);
         RoomType updatedRoomType = roomTypeRepository.save(roomType);
-        return makeRoomTypeResponse(updatedRoomType, authentication);
+        return serviceHelper.makeRoomTypeResponse(updatedRoomType, authentication);
     }
     
     public void deleteRoomType(Long id) {
@@ -72,11 +69,4 @@ public class RoomTypeService {
         roomTypeRepository.deleteById(id);
     }
 
-    public EntityModel<RoomTypeResponse> makeRoomTypeResponse(RoomType roomType, Authentication authentication) {
-        CollectionModel<EntityModel<UtilityResponse_Basic>> utilityResponseModels = roomType.getRoomTypeUtilities().stream().map(utility -> utilityService.makeUtilityResponse(UtilityResponse_Basic.class, utility, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
-        CollectionModel<EntityModel<RoomResponse>> roomResponseModels = roomType.getRooms().stream().map(room -> roomService.makeRoomResponse(room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
-        
-        RoomTypeResponse roomTypeResponse = new RoomTypeResponse(roomType, utilityResponseModels, roomResponseModels);
-        return roomTypeAssembler.toModel(roomTypeResponse, authentication);
-    }
 }
