@@ -20,11 +20,9 @@ public class ReservationRequest {
     private Date checkIn;
     private Date checkOut;
     
-    @NotBlank
     @PositiveOrZero
     private BigDecimal totalPrice;
     
-    @NotBlank
     private long ownerId;
     
     @Size(min = 1)

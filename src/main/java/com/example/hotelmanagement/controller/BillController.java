@@ -22,9 +22,9 @@ public class BillController {
         return ResponseEntity.ok(responseEntityModel);
     }
     
-    @PostMapping("/{reservation_id}")
-    public ResponseEntity<?> createBill(@PathVariable long reservation_id, @RequestBody @Validated BillRequest billRequest, Authentication authentication) {
-        EntityModel<BillResponse> billRequestEntityModel = billService.createBill(reservation_id, billRequest, authentication);
+    @PostMapping("/create")
+    public ResponseEntity<?> createBill(@RequestBody @Validated BillRequest billRequest, Authentication authentication) {
+        EntityModel<BillResponse> billRequestEntityModel = billService.createBill(billRequest, authentication);
         return ResponseEntity.ok(billRequestEntityModel);
     }
 

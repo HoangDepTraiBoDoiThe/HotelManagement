@@ -28,9 +28,9 @@ public class BillService {
         return serviceHelper.makeBillResponse(bill, authentication);
     }
     
-    public EntityModel<BillResponse> createBill(long reservation_id, BillRequest billRequest, Authentication authentication) {
+    public EntityModel<BillResponse> createBill(BillRequest billRequest, Authentication authentication) {
         Bill newBill = billRequest.toModel();
-        Reservation reservation = reservationService.getReservation_entity(reservation_id);
+        Reservation reservation = reservationService.getReservation_entity(billRequest.getReservationId());
         newBill.setReservation(reservation);
         
         Bill newCreatedBill = billRepository.save(newBill);

@@ -24,14 +24,10 @@ public class Reservation {
     @GeneratedValue
     private long id;
     
-    @NotBlank
-    @PastOrPresent
     @Column(nullable = false)
     private Date checkIn;
     private Date checkOut;
     
-    @NotBlank
-    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
