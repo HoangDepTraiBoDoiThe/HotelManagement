@@ -1,6 +1,8 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.Auth.dtos.RegisterRequest;
 import com.example.hotelmanagement.constants.ApplicationRole;
+import com.example.hotelmanagement.dto.request.UserRequest;
 import com.example.hotelmanagement.dto.response.user.UserResponse_Full;
 import com.example.hotelmanagement.dto.response.user.UserResponse_Minimal;
 import com.example.hotelmanagement.exception.AuthException;
@@ -9,15 +11,18 @@ import com.example.hotelmanagement.exception.ResourceNotFoundException;
 import com.example.hotelmanagement.helper.SecurityHelper;
 import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.helper.StaticHelper;
+import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final ServiceHelper serviceHelper;
 
     public CollectionModel<?> getUsers(Authentication authentication) {
@@ -60,7 +66,12 @@ public class UserService {
         return serviceHelper.makeUserResponse(UserResponse_Minimal.class, user, authentication);
     }
 
-    public EntityModel<UserResponse_Full> createUser(User newUser, Authentication authentication) throws AuthenticationException {
+    public EntityModel<UserResponse_Full> createUser(RegisterRequest userRequest, Authentication authentication) throws AuthenticationException {
+        User newUser = userRequest.toUser(passwordEncoder);
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role(ApplicationRole.GUESS.name()));
+        newUser.setRoles(roles);
+        
         boolean isUserNameAvailable = userRepository.findUserByName(newUser.getName()).isEmpty();
         if (isUserNameAvailable) {
             userRepository.findUserByName(newUser.getName());

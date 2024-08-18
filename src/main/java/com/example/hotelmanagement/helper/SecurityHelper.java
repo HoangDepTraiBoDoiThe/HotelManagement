@@ -13,8 +13,10 @@ public class SecurityHelper {
 
     public static boolean checkOwningPermission(Authentication authentication, long userId, boolean throwIfNotMatch) {
         AuthUserDetail principal = extractPrincipal(authentication);
-        if (principal.getId() != userId  && throwIfNotMatch) throw new AuthException("Owner Id does not match the requested id");
-        return true;
+        if (principal == null) return false;
+        boolean isOwner = principal.getId() == userId;
+        if (!isOwner  && throwIfNotMatch) throw new AuthException("Owner Id does not match the requested id");
+        return isOwner;
     }
     
     public static boolean checkAdminPermission(Authentication authentication) {
@@ -23,6 +25,7 @@ public class SecurityHelper {
     }
 
     public static AuthUserDetail extractPrincipal(Authentication authentication) {
+        if (authentication == null) return null;
         return (AuthUserDetail)authentication.getPrincipal();
     }
 }

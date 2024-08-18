@@ -4,6 +4,7 @@ import com.example.hotelmanagement.helper.MyPermissionEvaluator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,6 +53,7 @@ public class ApplicationJwtConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.
                         requestMatchers("/api/auth/**", "api/rooms/**").permitAll().
+                        requestMatchers(HttpMethod.GET, "/api/users/**").permitAll().
                         requestMatchers("api/roles/**").hasAnyRole("ADMIN").
                         anyRequest().authenticated()
                 );

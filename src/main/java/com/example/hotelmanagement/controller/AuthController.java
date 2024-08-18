@@ -31,13 +31,11 @@ import java.util.Collection;
 public class AuthController {
     private final UserService userService;
     private final AuthUtils authUtils;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> userRegister(@RequestBody @Validated RegisterRequest request) throws AuthenticationException {
-        User newUser = request.toUser(passwordEncoder);
-        userService.createUser(newUser, null);
+        userService.createUser(request, null);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new RegisterResponse("User created successfully"));
     }

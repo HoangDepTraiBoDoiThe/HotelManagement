@@ -19,14 +19,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class UserResponse_Full extends UserResponse_Minimal {
     private String email;
-    private String password;
     private String phoneNumber;
     private List<String> roles = new ArrayList<>();
 
     public UserResponse_Full(User user) {
         super(user);
         this.email = user.getEmail();
-        this.password = user.getPassword();
         this.phoneNumber = user.getPhoneNumber();
         if (!user.getRoles().isEmpty()) {
             this.roles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
