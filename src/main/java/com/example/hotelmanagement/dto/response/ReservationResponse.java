@@ -17,22 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationResponse extends ResponseBase{
-    Date checkIn;
-    Date checkOut;
-    BigDecimal totalPrice;
     EntityModel<?> owner;
-    List<?> rooms;
-    List<?> additionalUtilities;
     EntityModel<?> bill;
+    List<RoomReservationResponse> rookedRooms;
 
-    public ReservationResponse(Reservation reservation, EntityModel<?> owner, List<?> rooms, List<?> additionalUtilities, EntityModel<?> bill) {
+    public ReservationResponse(Reservation reservation, EntityModel<?> owner, List<RoomReservationResponse> rookedRooms, EntityModel<?> bill) {
         super(reservation.getId());
-        this.checkIn = reservation.getCheckIn();
-        this.checkOut = reservation.getCheckOut();
-        this.totalPrice = reservation.getTotalPrice();
         this.owner = owner;
-        this.rooms = rooms;
-        this.additionalUtilities = additionalUtilities;
         this.bill = bill;
+        this.rookedRooms = rookedRooms;
     }
 }

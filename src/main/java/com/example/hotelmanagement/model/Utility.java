@@ -38,7 +38,7 @@ public class Utility {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "additionRoomUtility", fetch = FetchType.LAZY)
-    private Set<Reservation> reservations = new HashSet<>();
+    private Set<RoomReservation> roomReservations = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

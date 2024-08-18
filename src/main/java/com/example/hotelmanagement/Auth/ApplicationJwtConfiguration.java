@@ -1,6 +1,5 @@
 package com.example.hotelmanagement.Auth;
 
-import com.example.hotelmanagement.helper.MyPermissionEvaluator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class ApplicationJwtConfiguration {
     private final ApplicationJwtFilter applicationJwtFilter;
-    private final MyPermissionEvaluator myPermissionEvaluator;
 
-    @Bean
-    MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
-        handler.setPermissionEvaluator(myPermissionEvaluator);
-        return handler;
-    }
-    
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,6 +1,7 @@
 package com.example.hotelmanagement.model.repository;
 
 import com.example.hotelmanagement.model.Room;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +15,10 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT DISTINCT r FROM Room r join fetch r.roomTypes where r.id = :id")
     Optional<Room> findWithRoomTypesById(@Param("id") Long id);
     
-    @Query("SELECT DISTINCT r FROM Room r LEFT JOIN FETCH r.reservations")
+    @Query("SELECT DISTINCT r FROM Room r LEFT JOIN FETCH r.roomReservations")
     List<Room> findAllWithReservations();
+    
+    @EntityGraph(attributePaths = "roomTypes")
+    @Query("SELECT r FROM Room r LEFT JOIN FETCH r.roomReservations where r.id = :id")
+    Optional<Room> findAllWithReservations(@Param("id") long id);
 }

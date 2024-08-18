@@ -37,7 +37,7 @@ public class RoomService {
     }
 
     public EntityModel<RoomResponse_Full> getRoomById(Long id, Authentication authentication) {
-        Room room = roomRepository.findWithRoomTypesById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id)));
+        Room room = roomRepository.findAllWithReservations(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id)));
         return serviceHelper.makeRoomResponse(RoomResponse_Full.class, room, authentication);
     }
     

@@ -46,14 +46,14 @@ public class Room {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
-    private Set<AppPhotos> roomImage = new HashSet<>();
+    @OneToMany(orphanRemoval = true, mappedBy = "room")
+    private Set<RoomReservation> roomReservations = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "rooms")
-    private Set<Reservation> reservations = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @JoinTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
+    private Set<AppPhotos> roomImage = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
