@@ -53,6 +53,16 @@ class Handler {
         return ResponseEntity.badRequest().body(validationExceptionResponse);
     }
     
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<?> handleAuthExceptions(AuthException ex, WebRequest webRequest) {
+        String errorMessage = ex.getMessage();
+        String causerMessage = "";
+        if (ex.getCause() != null) causerMessage = ex.getCause().getMessage();
+        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format("My message: %s", errorMessage), causerMessage, HttpStatus.NOT_ACCEPTABLE.name(), webRequest.getDescription(false));
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
     @ExceptionHandler({RuntimeException.class, Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ResponseEntity<?> handleOtherException(Exception ex, WebRequest webRequest) {

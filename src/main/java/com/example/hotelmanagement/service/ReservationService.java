@@ -1,9 +1,13 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.controller.assembler.ReservationAssembler;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
+import com.example.hotelmanagement.exception.AuthException;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
+import com.example.hotelmanagement.helper.SecurityHelper;
 import com.example.hotelmanagement.helper.ServiceHelper;
+import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.model.Reservation;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
 import com.example.hotelmanagement.model.Room;
@@ -23,7 +27,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final ReservationAssembler reservationAssembler;
     private final UserService userService;
     private final ServiceHelper serviceHelper;
     private final RoomService roomService;
@@ -42,6 +45,8 @@ public class ReservationService {
     }    
 
     public EntityModel<ReservationResponse> createReservation(ReservationRequest reservationRequest, Authentication authentication) {
+        SecurityHelper.checkOwningPermission(authentication, reservationRequest.getOwnerId(), true);
+        
         Set<Room> rooms = reservationRequest.getRoomIds().stream().map(roomId -> roomService.getRoomById_entity(roomId, authentication, true)).collect(Collectors.toSet());
         Set<Utility> additionalUtilities = reservationRequest.getAdditionalUtilityIds().stream().map(utilityId -> utilityService.getUtilityById_entity(utilityId, authentication, true)).collect(Collectors.toSet());
         User user = userService.getUserById_entity(reservationRequest.getOwnerId(), true);
@@ -54,6 +59,9 @@ public class ReservationService {
     
     public EntityModel<ReservationResponse> updateReservation(long id, ReservationRequest reservationRequest, Authentication authentication) {
         Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+        if (!SecurityHelper.checkOwningPermission(authentication, reservationToUpdate.getOwner().getId(), false) && !SecurityHelper.checkAdminPermission(authentication))
+            throw new AuthException("You do not have permission to update this reservation");
+            
         reservationToUpdate.setCheckIn(reservationRequest.getCheckIn());
         reservationToUpdate.setCheckOut(reservationRequest.getCheckOut());
         reservationToUpdate.setTotalPrice(reservationRequest.getTotalPrice());
@@ -64,11 +72,12 @@ public class ReservationService {
         return serviceHelper.makeReservationResponse(updatedReservation, authentication);
     }
     
-    public void deleteReservation(long id) {
+    public void deleteReservation(long id, Authentication authentication) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+        Set<String> roles = StaticHelper.extractAllRoles(authentication);
+        if (!SecurityHelper.checkOwningPermission(authentication, reservation.getOwner().getId(), false) || !SecurityHelper.checkAdminPermission(authentication))
+            throw new AuthException("You do not have permission to delete this reservation");
+
         reservationRepository.delete(reservation);
     }
-
-
-
 }

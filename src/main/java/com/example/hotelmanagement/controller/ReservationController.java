@@ -1,12 +1,16 @@
 package com.example.hotelmanagement.controller;
 
+import com.example.hotelmanagement.Auth.UserDetail.AuthUserDetail;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.dto.request.ReservationRequest;
+import com.example.hotelmanagement.exception.AuthException;
+import com.example.hotelmanagement.helper.SecurityHelper;
 import com.example.hotelmanagement.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +46,8 @@ public class ReservationController {
     }
     
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
-        reservationService.deleteReservation(id);
+    public ResponseEntity<Void> deleteReservation(@PathVariable long id, Authentication authentication) {
+        reservationService.deleteReservation(id, authentication);
         return ResponseEntity.noContent().build();
     }
 }

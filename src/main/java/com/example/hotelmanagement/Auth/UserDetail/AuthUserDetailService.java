@@ -19,7 +19,7 @@ public class AuthUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByName(username).orElseThrow(() -> new  UsernameNotFoundException(String.format(username, "Can not find any user with this user name: [%s]")));
-        AuthUserDetail userDetail = new AuthUserDetail(user.getName(), user.getPassword(), user.getEmail());
+        AuthUserDetail userDetail = new AuthUserDetail(user.getId(), user.getName(), user.getPassword(), user.getEmail());
         userDetail.setOwningAuthorities(user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toList()));
         
         return userDetail;

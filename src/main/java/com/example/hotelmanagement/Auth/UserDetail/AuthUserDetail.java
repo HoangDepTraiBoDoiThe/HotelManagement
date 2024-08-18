@@ -15,12 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthUserDetail implements UserDetails {
 
+    long id;
     String userName;
     String password;
     String email;
     Collection<GrantedAuthority> owningAuthorities;
 
-    public AuthUserDetail(String userName, String password, String email) {
+    public AuthUserDetail(long id, String userName, String password, String email) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
         this.email = email;
