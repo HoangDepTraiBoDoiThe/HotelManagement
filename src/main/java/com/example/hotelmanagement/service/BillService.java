@@ -6,6 +6,7 @@ import com.example.hotelmanagement.dto.request.BillRequest;
 import com.example.hotelmanagement.dto.response.BillResponse;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
+import com.example.hotelmanagement.helper.SecurityHelper;
 import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.model.Bill;
@@ -27,6 +28,8 @@ public class BillService {
     
     public EntityModel<BillResponse> getBillById(long id, Authentication authentication) {
         Bill bill = billRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Bill with id %d not found", id)));
+        SecurityHelper.checkOwningPermission(authentication, bill.getReservation().getId(), true);
+        
         return serviceHelper.makeBillResponse(bill, authentication);
     }
     

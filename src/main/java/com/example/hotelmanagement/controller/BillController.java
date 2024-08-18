@@ -6,6 +6,7 @@ import com.example.hotelmanagement.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +22,22 @@ public class BillController {
         EntityModel<BillResponse> responseEntityModel = billService.getBillById(bill_id, authentication);
         return ResponseEntity.ok(responseEntityModel);
     }
-    
+
+    @Secured("ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createBill(@RequestBody @Validated BillRequest billRequest, Authentication authentication) {
         EntityModel<BillResponse> billRequestEntityModel = billService.createBill(billRequest, authentication);
         return ResponseEntity.ok(billRequestEntityModel);
     }
 
+    @Secured("ADMIN")
     @PutMapping("/{bill_id}")
     public ResponseEntity<?> updateBill(@PathVariable long bill_id, @RequestBody @Validated BillRequest billRequest, Authentication authentication) {
         EntityModel<BillResponse> billRequestEntityModel = billService.updateBill(bill_id, billRequest, authentication);
         return ResponseEntity.ok(billRequestEntityModel);
     }
 
+    @Secured("ADMIN")
     @DeleteMapping("/delete/{bill_id}")
     public ResponseEntity<?> deleteBill(@PathVariable long bill_id) {
         billService.deleteBill(bill_id);

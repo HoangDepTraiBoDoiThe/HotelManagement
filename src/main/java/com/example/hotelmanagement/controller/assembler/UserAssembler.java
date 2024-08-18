@@ -35,7 +35,7 @@ public class UserAssembler {
         if (roles.contains(ApplicationRole.ADMIN.name()) || roles.contains(ApplicationRole.MANAGER.name())) {
             entityModel.add(
                     WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).updateUser(entity.getId(), null, authentication)).withRel("Update user").withType("PUT"),
-                    WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(entity.getId())).withRel("Delete user").withType("DELETE")
+                    WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deleteUser(entity.getId(), authentication)).withRel("Delete user").withType("DELETE")
             );
         }
 

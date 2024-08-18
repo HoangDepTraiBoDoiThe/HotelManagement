@@ -2,8 +2,10 @@ package com.example.hotelmanagement.service;
 
 import com.example.hotelmanagement.controller.assembler.UserAssembler;
 import com.example.hotelmanagement.dto.response.UserResponse;
+import com.example.hotelmanagement.exception.AuthException;
 import com.example.hotelmanagement.exception.ClientBadRequestException;
 import com.example.hotelmanagement.exception.ResourceNotFoundException;
+import com.example.hotelmanagement.helper.SecurityHelper;
 import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.model.User;
 import com.example.hotelmanagement.model.repository.UserRepository;
@@ -22,7 +24,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final UserAssembler userAssembler;
     private final ServiceHelper serviceHelper;
 
     public CollectionModel<EntityModel<UserResponse>> getUsers(Authentication authentication) {
@@ -62,6 +63,8 @@ public class UserService {
     
     public EntityModel<UserResponse> updateUser(long id, User newUserData, Authentication authentication) throws AuthenticationException {
         User existingUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!SecurityHelper.checkOwningPermission(authentication, existingUser.getId(), false) && !SecurityHelper.checkAdminPermission(authentication))
+            throw new AuthException("You do not have permission for this request");
 
         existingUser.setName(newUserData.getName());
         existingUser.setEmail(newUserData.getEmail());
@@ -72,8 +75,10 @@ public class UserService {
         return serviceHelper.makeUserResponse(userRepository.save(existingUser), authentication);
     }
     
-    public void deleteUser(long id) {
+    public void deleteUser(long id, Authentication authentication) {
         User existingUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!SecurityHelper.checkOwningPermission(authentication, existingUser.getId(), false) && !SecurityHelper.checkAdminPermission(authentication))
+            throw new AuthException("You do not have permission for this request");
         userRepository.deleteById(id);
     }
     

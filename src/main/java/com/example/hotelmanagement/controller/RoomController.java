@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -34,17 +35,20 @@ public class RoomController {
         return ResponseEntity.ok(responseEntityModels);
     }
 
+    @Secured("ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createRoom(@RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
         EntityModel<RoomResponse_Full> roomResponseAdminEntityModel = roomService.createRoom(roomRequest, authentication);
         return ResponseEntity.ok(roomResponseAdminEntityModel);
     }
 
+    @Secured("ADMIN")
     @PutMapping("/{id}/update")
     public ResponseEntity<?> updateRoom(@PathVariable long id, @RequestBody @Validated RoomRequest roomRequest, Authentication authentication) {
         return ResponseEntity.ok(roomService.updateRoomType(id, roomRequest, authentication));
     }
 
+    @Secured("ADMIN")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<?> deleteRoom(@PathVariable long id) {
         roomService.deleteRoomType(id);
