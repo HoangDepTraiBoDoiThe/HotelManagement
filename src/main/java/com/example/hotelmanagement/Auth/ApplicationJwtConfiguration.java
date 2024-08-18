@@ -51,9 +51,9 @@ public class ApplicationJwtConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.
-//                        requestMatchers("/api/auth/**", "/rooms/**").permitAll().
-                        requestMatchers("/roles/**").hasAnyRole("ADMIN").
-                        anyRequest().permitAll()
+                        requestMatchers("/api/auth/**", "api/rooms/**").permitAll().
+                        requestMatchers("api/roles/**").hasAnyRole("ADMIN").
+                        anyRequest().authenticated()
                 );
 
         httpSecurity.addFilterBefore(applicationJwtFilter, UsernamePasswordAuthenticationFilter.class);

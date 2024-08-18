@@ -25,7 +25,7 @@ public class ApplicationJwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getJwtToken(request);
-            if (!token.isBlank() && !utils.validateToken(token)) {
+            if (!token.isBlank() && utils.validateToken(token)) {
                 AuthUserDetail authUserDetail = (AuthUserDetail) authUserDetailService.loadUserByUsername(utils.extractClaimProperty(token, Claims::getSubject));
                 var nameAndPassAuth = new UsernamePasswordAuthenticationToken(authUserDetail, null, authUserDetail.getAuthorities());
                 nameAndPassAuth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
