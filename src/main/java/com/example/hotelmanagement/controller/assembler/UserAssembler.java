@@ -4,16 +4,12 @@ import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.controller.AuthController;
 import com.example.hotelmanagement.controller.UserController;
 import com.example.hotelmanagement.dto.response.ResponseBase;
-import com.example.hotelmanagement.dto.response.UserResponse;
 import com.example.hotelmanagement.helper.StaticHelper;
-import com.example.hotelmanagement.model.User;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.naming.AuthenticationException;
 import java.util.Set;

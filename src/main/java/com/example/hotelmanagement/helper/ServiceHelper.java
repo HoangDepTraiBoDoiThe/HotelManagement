@@ -4,12 +4,13 @@ import com.example.hotelmanagement.controller.assembler.*;
 import com.example.hotelmanagement.dto.response.*;
 import com.example.hotelmanagement.dto.response.room.RoomResponse_Basic;
 import com.example.hotelmanagement.dto.response.room.RoomResponse_Full;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Basic;
 import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Full;
 import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Minimal;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Basic;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Full;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Minimal;
+import com.example.hotelmanagement.dto.response.user.UserResponse_Full;
+import com.example.hotelmanagement.dto.response.user.UserResponse_Minimal;
 import com.example.hotelmanagement.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -35,9 +36,20 @@ public class ServiceHelper {
     private final RoomTypeAssembler roomTypeAssembler;
     private final RoleAssembler roleAssembler;
 
-    public EntityModel<UserResponse> makeUserResponse(User user, Authentication authentication) throws AuthenticationException {
-        UserResponse userResponse = new UserResponse(user);
-        return userAssembler.toModel(userResponse, authentication);
+    public <T extends UserResponse_Minimal> EntityModel<T> makeUserResponse(Class<T> responseType, User user, Authentication authentication) throws AuthenticationException {
+        T response;
+        try {
+            if (UserResponse_Full.class.equals(responseType)) {
+                response = (T) new UserResponse_Full(user);
+            } else {
+                response = responseType.getDeclaredConstructor(User.class).newInstance(user);
+            }
+
+            return userAssembler.toModel(response, authentication);
+        } catch (Exception exception) {
+            
+        }
+   
     }
     
     public EntityModel<RoleResponse> makeRoleResponse(Role role, Authentication authentication) {
@@ -46,9 +58,9 @@ public class ServiceHelper {
     }
     
     public EntityModel<ReservationResponse> makeReservationResponse(Reservation reservation, Authentication authentication) {
-        EntityModel<UserResponse> userResponseEntityModel = null;
+        EntityModel<UserResponse_Minimal> userResponseEntityModel = null;
         try {
-            userResponseEntityModel = makeUserResponse(reservation.getOwner(), authentication);
+            userResponseEntityModel = makeUserResponse(UserResponse_Minimal.class, reservation.getOwner(), authentication);
         } catch (AuthenticationException e) {
             throw new RuntimeException(e);
         }

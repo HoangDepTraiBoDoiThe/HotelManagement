@@ -1,6 +1,7 @@
-package com.example.hotelmanagement.dto.response;
+package com.example.hotelmanagement.dto.response.user;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
+import com.example.hotelmanagement.dto.response.ResponseBase;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.User;
 import lombok.AllArgsConstructor;
@@ -16,16 +17,14 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse extends ResponseBase{
-    private String name;
+public class UserResponse_Full extends UserResponse_Minimal {
     private String email;
     private String password;
     private String phoneNumber;
     private List<String> roles = new ArrayList<>();
 
-    public UserResponse(User user) {
-        super(user.getId());
-        this.name = user.getName();
+    public UserResponse_Full(User user) {
+        super(user);
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.phoneNumber = user.getPhoneNumber();

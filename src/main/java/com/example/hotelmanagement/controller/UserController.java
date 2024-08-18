@@ -1,8 +1,7 @@
 package com.example.hotelmanagement.controller;
 
 import com.example.hotelmanagement.model.User;
-import com.example.hotelmanagement.controller.assembler.UserAssembler;
-import com.example.hotelmanagement.dto.response.UserResponse;
+import com.example.hotelmanagement.dto.response.user.UserResponse_Full;
 import com.example.hotelmanagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -20,18 +19,18 @@ public class UserController {
     private final UserService userService;
     
     @GetMapping("{id}")
-    public ResponseEntity<EntityModel<UserResponse>> getUserById(@PathVariable long id, Authentication authentication) throws AuthenticationException {
-        EntityModel<UserResponse> userResponseEntityModel = userService.getUserById(id, authentication);
+    public ResponseEntity<EntityModel<?>> getUserById(@PathVariable long id, Authentication authentication) throws AuthenticationException {
+        EntityModel<?> userResponseEntityModel = userService.getUserById(id, authentication);
         return ResponseEntity.ok(userResponseEntityModel);
     }
     
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<UserResponse>>> getAllUsers(Authentication authentication) {
+    public ResponseEntity<?> getAllUsers(Authentication authentication) {
         return ResponseEntity.ok(userService.getUsers(authentication));
     }
     
     @PutMapping("{id}")
-    public ResponseEntity<EntityModel<UserResponse>> updateUser(@PathVariable long id, User newUserData, Authentication authentication) throws AuthenticationException {
+    public ResponseEntity<EntityModel<UserResponse_Full>> updateUser(@PathVariable long id, User newUserData, Authentication authentication) throws AuthenticationException {
         return ResponseEntity.ok(userService.updateUser(id, newUserData, authentication));
 
     }
