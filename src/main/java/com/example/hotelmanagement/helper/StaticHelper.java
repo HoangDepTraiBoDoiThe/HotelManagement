@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,5 +35,9 @@ public class StaticHelper {
 
     public List<String> getUserApplicationRole(Authentication authentication) {
         return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    }
+
+    public static LocalDate getCurrentLocalDate() {
+        return LocalDate.now(ZoneId.systemDefault());
     }
 }

@@ -13,6 +13,7 @@ import com.example.hotelmanagement.helper.ServiceHelper;
 import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.User;
+import com.example.hotelmanagement.model.repository.RoleRepository;
 import com.example.hotelmanagement.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ServiceHelper serviceHelper;
 
@@ -69,12 +71,11 @@ public class UserService {
     public EntityModel<UserResponse_Full> createUser(RegisterRequest userRequest, Authentication authentication) throws AuthenticationException {
         User newUser = userRequest.toUser(passwordEncoder);
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role(ApplicationRole.GUESS.name()));
+        roles.add(roleRepository.findRoleByRoleName(ApplicationRole.GUESS.name()).orElseThrow(() -> new ResourceNotFoundException(String.format("Role [%s] not found", ApplicationRole.GUESS.name()))));
         newUser.setRoles(roles);
         
         boolean isUserNameAvailable = userRepository.findUserByName(newUser.getName()).isEmpty();
         if (isUserNameAvailable) {
-            userRepository.findUserByName(newUser.getName());
             return serviceHelper.makeUserResponse(UserResponse_Full.class, userRepository.save(newUser), authentication);
         }
         throw new ClientBadRequestException("Username is already taken.");
