@@ -47,9 +47,8 @@ public class ServiceHelper {
 
             return userAssembler.toModel(response, authentication);
         } catch (Exception exception) {
-            
+            throw new RuntimeException(exception);
         }
-   
     }
     
     public EntityModel<RoleResponse> makeRoleResponse(Role role, Authentication authentication) {
