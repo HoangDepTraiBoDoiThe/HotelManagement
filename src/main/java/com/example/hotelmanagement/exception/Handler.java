@@ -12,7 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-record ExceptionResponse(String message, String status, String webRequest) {}
+record ExceptionResponse(String message, String causerMessage, String status, String webRequest) {}
 record ValidationExceptionResponse(String message, String status, Map<String, String> validationErrors, String webRequest) {}
 
 
@@ -24,7 +24,9 @@ class Handler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest webRequest) {
         String errorMessage = ex.getMessage();
-        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format(messageTemplate, errorMessage), HttpStatus.NOT_FOUND.name(), webRequest.getDescription(false));
+        String causerMessage = "";
+        if (ex.getCause() != null) causerMessage = ex.getCause().getMessage();
+        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format(messageTemplate, errorMessage), causerMessage, HttpStatus.NOT_FOUND.name(), webRequest.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
     
@@ -32,7 +34,9 @@ class Handler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<?> handleClientBadRequestException(ClientBadRequestException ex, WebRequest webRequest) {
         String errorMessage = ex.getMessage();
-        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format(messageTemplate, errorMessage), HttpStatus.BAD_REQUEST.name(), webRequest.getDescription(false));
+        String causerMessage = "";
+        if (ex.getCause() != null) causerMessage = ex.getCause().getMessage();
+        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format(messageTemplate, errorMessage), causerMessage, HttpStatus.BAD_REQUEST.name(), webRequest.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -53,7 +57,9 @@ class Handler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ResponseEntity<?> handleOtherException(Exception ex, WebRequest webRequest) {
         String errorMessage = ex.getMessage();
-        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format("My message - Internal exception: %s", errorMessage), HttpStatus.INTERNAL_SERVER_ERROR.name(), webRequest.getDescription(false));
+        String causerMessage = "";
+        if (ex.getCause() != null) causerMessage = ex.getCause().getMessage();
+        ExceptionResponse exceptionResponse = new ExceptionResponse(String.format("My message - Internal exception: %s", errorMessage), causerMessage, HttpStatus.INTERNAL_SERVER_ERROR.name(), webRequest.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

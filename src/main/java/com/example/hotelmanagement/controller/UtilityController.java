@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/utilities")
+@RequestMapping("api/rooms/utilities")
 public class UtilityController {
     private final UtilityService utilityService;
 

@@ -10,6 +10,7 @@ import org.springframework.hateoas.EntityModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -20,11 +21,11 @@ public class ReservationResponse extends ResponseBase{
     Date checkOut;
     BigDecimal totalPrice;
     EntityModel<?> owner;
-    CollectionModel<?> rooms;
-    CollectionModel<?> additionalUtilities;
+    List<?> rooms;
+    List<?> additionalUtilities;
     EntityModel<?> bill;
 
-    public ReservationResponse(Reservation reservation, EntityModel<?> owner, CollectionModel<?> rooms, CollectionModel<?> additionalUtilities, EntityModel<?> bill) {
+    public ReservationResponse(Reservation reservation, EntityModel<?> owner, List<?> rooms, List<?> additionalUtilities, EntityModel<?> bill) {
         super(reservation.getId());
         this.checkIn = reservation.getCheckIn();
         this.checkOut = reservation.getCheckOut();

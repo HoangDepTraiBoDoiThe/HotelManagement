@@ -52,8 +52,8 @@ public class ServiceHelper {
         } catch (AuthenticationException e) {
             throw new RuntimeException(e);
         }
-        CollectionModel<EntityModel<UtilityResponse_Minimal>> additionalUtilityResponseEntityModels = reservation.getAdditionRoomUtility().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
-        CollectionModel<EntityModel<RoomResponse_Full>> roomResponseEntityModels = reservation.getRooms().stream().map(room -> makeRoomResponse(RoomResponse_Full.class, room, authentication)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
+        List<EntityModel<UtilityResponse_Minimal>> additionalUtilityResponseEntityModels = reservation.getAdditionRoomUtility().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).toList();
+        List<EntityModel<RoomResponse_Basic>> roomResponseEntityModels = reservation.getRooms().stream().map(room -> makeRoomResponse(RoomResponse_Basic.class, room, authentication)).toList();
         EntityModel<BillResponse> billResponseEntityModel = makeBillResponse(reservation.getReservationBill(), authentication);
 
         ReservationResponse reservationResponse = new ReservationResponse(reservation, userResponseEntityModel, roomResponseEntityModels, additionalUtilityResponseEntityModels, billResponseEntityModel);
@@ -114,7 +114,7 @@ public class ServiceHelper {
     private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Set<Reservation> reservations, Authentication authentication) {
         if (reservations == null) return Optional.empty();
         return reservations.stream()
-                .filter(reservation -> reservation.getCheckOut().after(new Date()))
+                .filter(reservation -> (reservation.getCheckOut() != null && reservation.getCheckOut().after(new Date())))
                 .findFirst()
                 .map(reservation -> makeReservationResponse(reservation, authentication));
     }

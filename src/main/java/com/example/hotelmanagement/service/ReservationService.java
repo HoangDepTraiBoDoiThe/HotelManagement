@@ -42,11 +42,11 @@ public class ReservationService {
     }    
 
     public EntityModel<ReservationResponse> createReservation(ReservationRequest reservationRequest, Authentication authentication) {
-        Set<Room> room = reservationRequest.getRoomIds().stream().map(roomId -> roomService.getRoomById_entity(roomId, authentication, true)).collect(Collectors.toSet());
+        Set<Room> rooms = reservationRequest.getRoomIds().stream().map(roomId -> roomService.getRoomById_entity(roomId, authentication, true)).collect(Collectors.toSet());
         Set<Utility> additionalUtilities = reservationRequest.getAdditionalUtilityIds().stream().map(utilityId -> utilityService.getUtilityById_entity(utilityId, authentication, true)).collect(Collectors.toSet());
         User user = userService.getUserById_entity(reservationRequest.getOwnerId(), true);
-        
-        Reservation newReservation = new Reservation(reservationRequest.getCheckIn(), reservationRequest.getCheckOut(), reservationRequest.getTotalPrice(), user, room, additionalUtilities);
+
+        Reservation newReservation = reservationRequest.toModel(user, rooms, additionalUtilities);
         Reservation newCreatedReservation = reservationRepository.save(newReservation);
         
         return serviceHelper.makeReservationResponse(newCreatedReservation, authentication);
