@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class BillController {
     private final BillService billService;
 
-    @GetMapping("/{build_id}")
-    public ResponseEntity<?> getBillById(@PathVariable long build_id, Authentication authentication) {
-        EntityModel<BillResponse> responseEntityModel = billService.getBillById(build_id, authentication);
+    @GetMapping("/{bill_id}")
+    public ResponseEntity<?> getBillById(@PathVariable long bill_id, Authentication authentication) {
+        EntityModel<BillResponse> responseEntityModel = billService.getBillById(bill_id, authentication);
         return ResponseEntity.ok(responseEntityModel);
     }
     

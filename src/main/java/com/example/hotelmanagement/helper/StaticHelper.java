@@ -9,7 +9,10 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class StaticHelper {
@@ -23,12 +26,9 @@ public class StaticHelper {
         }
     }
 
-    public List<ApplicationRole> getAllRolesToAdd() {
-        List<ApplicationRole> applicationRoles = new ArrayList<>();
-        applicationRoles.add(ApplicationRole.GUESS);
-        applicationRoles.add(ApplicationRole.ADMIN);
-        applicationRoles.add(ApplicationRole.MANAGER);
-        return  applicationRoles;
+    public static Set<String> extractAllRoles(Authentication authentication) {
+        if (authentication == null) return new HashSet<>();
+        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
     }
 
     public List<String> getUserApplicationRole(Authentication authentication) {

@@ -17,6 +17,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.naming.AuthenticationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -32,14 +33,25 @@ public class ServiceHelper {
     private final UtilityAssembler utilityAssembler;
     private final RoomAssembler roomAssembler;
     private final RoomTypeAssembler roomTypeAssembler;
+    private final RoleAssembler roleAssembler;
 
-    public EntityModel<UserResponse> makeUserResponse(User user, Authentication authentication) {
+    public EntityModel<UserResponse> makeUserResponse(User user, Authentication authentication) throws AuthenticationException {
         UserResponse userResponse = new UserResponse(user);
         return userAssembler.toModel(userResponse, authentication);
     }
     
+    public EntityModel<RoleResponse> makeRoleResponse(Role role, Authentication authentication) {
+        RoleResponse roleResponse = new RoleResponse(role);
+        return roleAssembler.toModel(roleResponse, authentication);
+    }
+    
     public EntityModel<ReservationResponse> makeReservationResponse(Reservation reservation, Authentication authentication) {
-        EntityModel<UserResponse> userResponseEntityModel = makeUserResponse(reservation.getOwner(), authentication);
+        EntityModel<UserResponse> userResponseEntityModel = null;
+        try {
+            userResponseEntityModel = makeUserResponse(reservation.getOwner(), authentication);
+        } catch (AuthenticationException e) {
+            throw new RuntimeException(e);
+        }
         CollectionModel<EntityModel<UtilityResponse_Minimal>> additionalUtilityResponseEntityModels = reservation.getAdditionRoomUtility().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
         CollectionModel<EntityModel<RoomResponse_Full>> roomResponseEntityModels = reservation.getRooms().stream().map(room -> makeRoomResponse(RoomResponse_Full.class, room, authentication)).collect(Collectors.collectingAndThen(Collectors.toSet(), CollectionModel::of));
         EntityModel<BillResponse> billResponseEntityModel = makeBillResponse(reservation.getReservationBill(), authentication);
@@ -87,7 +99,7 @@ public class ServiceHelper {
             T roomResponse;
             EntityModel<ReservationResponse> currentReservation = getCurrentReservationModel(room.getReservations(), authentication).orElse(null);
             if (RoomResponse_Full.class.equals(responseType)) {
-                List<EntityModel<RoomTypeResponse_Full>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomTypeResponse_Full.class, roomType, authentication)).toList();
+                List<EntityModel<RoomTypeResponse_Minimal>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomTypeResponse_Minimal.class, roomType, authentication)).toList();
                 List<EntityModel<UtilityResponse_Minimal>> utilityResponseModels = room.getRoomUtilities().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).toList();
                 roomResponse = (T) new RoomResponse_Full(room, roomTypeResponseModels, utilityResponseModels, null, currentReservation);
             } else {

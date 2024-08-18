@@ -11,6 +11,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,40 +22,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;
-    private final RoleAssembler roleAssembler;
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<RoleResponse>> getRole(@PathVariable long id) {
-        Role role = roleService.getRoleById(id);
-        RoleResponse roleResponse = new RoleResponse(role);
-        EntityModel<RoleResponse> roleResponseEntityModel = roleAssembler.toModel(roleResponse);
-        return new ResponseEntity<>(roleResponseEntityModel, HttpStatus.OK);
+    public ResponseEntity<EntityModel<RoleResponse>> getRole(@PathVariable long id, Authentication authentication) {
+        return ResponseEntity.ok(roleService.getRoleById(id, authentication));
     }
 
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<RoleResponse>>> getAllRoles() {
-        List<RoleResponse> roleResponse = RoleResponse.toRoleResponses(roleService.getAllRole());
-        CollectionModel<EntityModel<RoleResponse>> collectionModel = roleAssembler.toCollectionModel(roleResponse);
-        collectionModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoleController.class).getAllRoles()).withSelfRel().withType("GET"));
-        return ResponseEntity.ok(collectionModel);
+    public ResponseEntity<?> getAllRoles(Authentication authentication) {
+        return ResponseEntity.ok(roleService.getAllRole(authentication));
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<RoleResponse>> createRole(@RequestBody RoleRequest roleRequest) {
-        RoleResponse roleResponse = new RoleResponse(roleService.createRole(roleRequest.getRoleName()));
-        EntityModel<RoleResponse> entityModel = roleAssembler.toModel(roleResponse);
-        return new ResponseEntity<>(entityModel, HttpStatus.OK);
+    public ResponseEntity<EntityModel<RoleResponse>> createRole(@RequestBody @Validated RoleRequest roleRequest, Authentication authentication) {
+        return ResponseEntity.ok(roleService.createRole(roleRequest, authentication));
     }
     
     @PutMapping("{id}")
-    public ResponseEntity<EntityModel<RoleResponse>> updateRole(@PathVariable long id, @RequestBody RoleRequest roleRequest) {
-        RoleResponse roleResponse = new RoleResponse(roleService.updateRole(id, roleRequest.getRoleName()));
-        EntityModel<RoleResponse> entityModel = roleAssembler.toModel(roleResponse);
-        return ResponseEntity.ok(entityModel);
+    public ResponseEntity<EntityModel<RoleResponse>> updateRole(@PathVariable long id, @RequestBody @Validated RoleRequest roleRequest, Authentication authentication) {
+        return ResponseEntity.ok(roleService.updateRole(id, roleRequest, authentication));
     }
 
     @DeleteMapping("{id}")
-    public void deleteRole(@PathVariable long id) {
+    public ResponseEntity<?> deleteRole(@PathVariable long id) {
         roleService.deleteRole(id);
+        return ResponseEntity.noContent().build();
     }
 }

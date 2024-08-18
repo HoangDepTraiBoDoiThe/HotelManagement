@@ -1,8 +1,10 @@
 package com.example.hotelmanagement.controller.assembler;
 
+import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.controller.ReservationController;
 import com.example.hotelmanagement.dto.response.ResponseBase;
+import com.example.hotelmanagement.helper.StaticHelper;
 import com.example.hotelmanagement.model.Reservation;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -11,16 +13,28 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class ReservationAssembler {
     public <T extends ResponseBase> EntityModel<T> toModel(T entity, Authentication authentication) {
-        return EntityModel.of(entity, 
+        Set<String> roles = StaticHelper.extractAllRoles(authentication);
+        
+        EntityModel<T> entityModel = EntityModel.of(entity, 
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ReservationController.class).getReservation(entity.getId(), authentication)).withSelfRel().withType("GET"),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ReservationController.class).getAllReservation(authentication)).withRel("get-all-reservations").withType("GET")
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ReservationController.class).getAllReservation(authentication)).withRel("Get all reservations").withType("GET")
         );
+        if (roles.contains(ApplicationRole.ADMIN.name()) || roles.contains(ApplicationRole.MANAGER.name())) {
+            entityModel.add(
+                    WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ReservationController.class).updateReservation(entity.getId(), null, authentication)).withRel("Update reservation").withType("PUT"),
+                    WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ReservationController.class).deleteReservation(entity.getId())).withRel("Delete reservation").withType("DELETE"),
+                    WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ReservationController.class).createReservation(null, authentication)).withRel("Create reservation").withType("POST")
+            );
+        } 
+        
+        return entityModel;
     }
 
     public <T extends ResponseBase> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {

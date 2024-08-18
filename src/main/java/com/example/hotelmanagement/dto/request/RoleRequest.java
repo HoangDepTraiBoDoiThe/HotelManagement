@@ -1,6 +1,7 @@
 package com.example.hotelmanagement.dto.request;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleRequest {
-    private ApplicationRole roleName;
+    @NotBlank
+    private String roleName;
 }

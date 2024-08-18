@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -18,7 +20,7 @@ public class UserController {
     private final UserService userService;
     
     @GetMapping("{id}")
-    public ResponseEntity<EntityModel<UserResponse>> getUserById(@PathVariable long id, Authentication authentication) {
+    public ResponseEntity<EntityModel<UserResponse>> getUserById(@PathVariable long id, Authentication authentication) throws AuthenticationException {
         EntityModel<UserResponse> userResponseEntityModel = userService.getUserById(id, authentication);
         return ResponseEntity.ok(userResponseEntityModel);
     }
@@ -27,14 +29,9 @@ public class UserController {
     public ResponseEntity<CollectionModel<EntityModel<UserResponse>>> getAllUsers(Authentication authentication) {
         return ResponseEntity.ok(userService.getUsers(authentication));
     }
-
-    @PostMapping
-    public ResponseEntity<EntityModel<UserResponse>> createUser(@RequestBody User newUser, Authentication authentication) {
-        return ResponseEntity.ok(userService.createUser(newUser, null));
-    }
     
     @PutMapping("{id}")
-    public ResponseEntity<EntityModel<UserResponse>> updateUser(@PathVariable long id, User newUserData, Authentication authentication) {
+    public ResponseEntity<EntityModel<UserResponse>> updateUser(@PathVariable long id, User newUserData, Authentication authentication) throws AuthenticationException {
         return ResponseEntity.ok(userService.updateUser(id, newUserData, authentication));
 
     }

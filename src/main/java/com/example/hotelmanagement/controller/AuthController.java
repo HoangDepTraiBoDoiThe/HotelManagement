@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> userRegister(@RequestBody RegisterRequest request) throws AuthenticationException {
+    public ResponseEntity<RegisterResponse> userRegister(@RequestBody @Validated RegisterRequest request) throws AuthenticationException {
         User newUser = request.toUser(passwordEncoder);
         userService.createUser(newUser, null);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -42,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> userLogin(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> userLogin(@RequestBody @Validated LoginRequest request) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword());
 
         Authentication authentication = authenticationManager.authenticate(authToken);

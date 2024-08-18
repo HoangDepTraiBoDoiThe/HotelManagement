@@ -16,6 +16,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BillService {

@@ -8,16 +8,15 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class RoleResponse {
+public class RoleResponse extends ResponseBase{
 
     private String roleName;
-    private long id;
     public RoleResponse(String roleName) {
         this.roleName = roleName;
     }
 
     public RoleResponse(Role role) {
-        this.id = role.getId();
+        super(role.getId());
         this.roleName = role.getRoleName();
     }
 

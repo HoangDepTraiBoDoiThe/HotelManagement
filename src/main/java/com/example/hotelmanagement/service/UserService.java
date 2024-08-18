@@ -13,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +27,16 @@ public class UserService {
 
     public CollectionModel<EntityModel<UserResponse>> getUsers(Authentication authentication) {
         List<User> users = userRepository.findAll().stream().toList();
-        return users.stream().map(user -> serviceHelper.makeUserResponse(user, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+        return users.stream().map(user -> {
+            try {
+                return serviceHelper.makeUserResponse(user, authentication);
+            } catch (AuthenticationException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
     }
     
-    public EntityModel<UserResponse> getUserById(long id, Authentication authentication) {
+    public EntityModel<UserResponse> getUserById(long id, Authentication authentication) throws AuthenticationException {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("User with id [%d] not found", id)));
         return serviceHelper.makeUserResponse(user, authentication);
     }
@@ -39,12 +46,12 @@ public class UserService {
         return user;
     }
     
-    public EntityModel<UserResponse> getUserByName(String userName, Authentication authentication) {
+    public EntityModel<UserResponse> getUserByName(String userName, Authentication authentication) throws AuthenticationException {
         User user = userRepository.findUserByName(userName).orElseThrow(() -> new ResourceNotFoundException(String.format("User with name [%s] not found", userName)));
         return serviceHelper.makeUserResponse(user, authentication);
     }
 
-    public EntityModel<UserResponse> createUser(User newUser, Authentication authentication) {
+    public EntityModel<UserResponse> createUser(User newUser, Authentication authentication) throws AuthenticationException {
         boolean isUserNameAvailable = userRepository.findUserByName(newUser.getName()).isEmpty();
         if (isUserNameAvailable) {
             userRepository.findUserByName(newUser.getName());
@@ -53,7 +60,7 @@ public class UserService {
         throw new ClientBadRequestException("Username is already taken.");
     }
     
-    public EntityModel<UserResponse> updateUser(long id, User newUserData, Authentication authentication) {
+    public EntityModel<UserResponse> updateUser(long id, User newUserData, Authentication authentication) throws AuthenticationException {
         User existingUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         existingUser.setName(newUserData.getName());

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Component
@@ -34,7 +36,12 @@ public class DataInitializer {
     @PostConstruct
     public void initData() {
         if (roleRepository.findAll().isEmpty()) {
-            staticHelper.getAllRolesToAdd().stream().map(role -> roleRepository.save(new Role(role.name()))).forEach(role -> {});
+            List<ApplicationRole> applicationRoles = new ArrayList<>();
+            applicationRoles.add(ApplicationRole.GUESS);
+            applicationRoles.add(ApplicationRole.ADMIN);
+            applicationRoles.add(ApplicationRole.MANAGER);
+
+            applicationRoles.stream().map(role -> roleRepository.save(new Role(role.name()))).forEach(role -> {});
             logger.info("Initialize initial roles");
         }
         if (userRepository.findUsersByRoleName(ApplicationRole.ADMIN.name()).isEmpty()) {
