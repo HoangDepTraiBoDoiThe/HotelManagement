@@ -42,13 +42,13 @@ public class ApplicationJwtConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.
-                        requestMatchers("/api/auth/**", "api/rooms/**").permitAll().
-                        requestMatchers(HttpMethod.GET, "/api/users/**").permitAll().
-                        requestMatchers("api/roles/**").hasAnyRole("ADMIN").
-                        anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
+//                        requestMatchers("/api/auth/**", "api/rooms/**").permitAll().
+//                        requestMatchers(HttpMethod.GET, "/api/users/**").permitAll().
+//                        requestMatchers("api/roles/**").hasAnyRole("ADMIN").
+//                        anyRequest().authenticated()
                 );
-
+        
         httpSecurity.addFilterBefore(applicationJwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
