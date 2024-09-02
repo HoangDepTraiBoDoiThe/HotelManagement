@@ -6,15 +6,12 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "reservations")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
-    @Id
-    @GeneratedValue
-    private long id;
-
+public class Reservation extends BaseModel {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne

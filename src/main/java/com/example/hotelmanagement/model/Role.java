@@ -4,21 +4,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Role {
-
-    @Id
-    @GeneratedValue
-    private long id;
-    
+public class Role extends BaseModel {
     @Column(nullable = false)
     @NotBlank
     private String roleName;

@@ -7,15 +7,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Utility {
-    @Id
-    @GeneratedValue
-    private long id;
-
+public class Utility extends BaseModel {
     @Column(length = 100, nullable = false)
     private String utilityName;
 

@@ -8,17 +8,14 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @NoArgsConstructor
 @Table(indexes = {
         @Index(name = "idx_checkout", columnList = "checkout")
 })
-public class RoomReservation {
-    @Id
-    @GeneratedValue
-    private long id;
-
+public class RoomReservation extends BaseModel {
     private LocalDate checkin;
     private LocalDate checkout;
 

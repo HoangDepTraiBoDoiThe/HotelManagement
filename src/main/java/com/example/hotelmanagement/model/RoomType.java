@@ -7,15 +7,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomType {
-    @Id
-    @GeneratedValue
-    private long id;
-
+public class RoomType extends BaseModel {
     @Column(length = 50,  nullable = false)
     private String typeName;
     private String description;

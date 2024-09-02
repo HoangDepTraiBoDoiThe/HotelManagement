@@ -8,16 +8,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Room {
-    
-    @Id
-    @GeneratedValue
-    private long id;
-
+public class Room extends BaseModel{
     @Column(nullable = false)
     private String roomName;
     

@@ -8,15 +8,12 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "Users")
-public class User {
-    @Id
-    @GeneratedValue
-    private long id;
-
+public class User extends BaseModel {
     @Size(max = 100)
     @NotBlank
     @Column(nullable = false, unique = true)
