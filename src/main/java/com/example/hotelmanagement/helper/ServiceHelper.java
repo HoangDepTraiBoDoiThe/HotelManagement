@@ -4,8 +4,8 @@ import com.example.hotelmanagement.controller.assembler.*;
 import com.example.hotelmanagement.dto.response.*;
 import com.example.hotelmanagement.dto.response.room.RoomResponse_Basic;
 import com.example.hotelmanagement.dto.response.room.RoomResponse_Full;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Full;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Minimal;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomType_FullResponse;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomType_MinimalResponse;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Basic;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Full;
 import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Minimal;
@@ -15,16 +15,17 @@ import com.example.hotelmanagement.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.naming.AuthenticationException;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
 @RequiredArgsConstructor
@@ -37,6 +38,18 @@ public class ServiceHelper {
     private final RoomTypeAssembler roomTypeAssembler;
     private final RoleAssembler roleAssembler;
 
+    public <T extends BaseResponse> CollectionModel<EntityModel<T>> addLinksToPaginationResponse(CollectionModel<EntityModel<T>> entityModels, int page, IMyHelper helperInterface) {
+
+        entityModels.add(
+                linkTo(helperInterface.getPaginationMethodToLink(page)).withSelfRel().withType(HttpMethod.GET.name()),
+                linkTo(helperInterface.getPaginationMethodToLink(page + 1)).withRel("Next").withType(HttpMethod.GET.name())
+        );
+        if (page > 0)
+            entityModels.add(linkTo((helperInterface.getPaginationMethodToLink(page - 1))).withRel("Prev").withType(HttpMethod.GET.name()));
+
+        return entityModels;
+    }
+    
     public <T extends UserResponse_Minimal> EntityModel<T> makeUserResponse(Class<T> responseType, User user, Authentication authentication) throws AuthenticationException {
         T response;
         try {
@@ -97,7 +110,7 @@ public class ServiceHelper {
             if (UtilityResponse_Full.class.equals(responseType)) {
                 // Build the full response with additional details
                 CollectionModel<EntityModel<RoomResponse_Basic>> roomResponseBases = utility.getRooms().stream().map(room -> makeRoomResponse(RoomResponse_Basic.class, room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));;
-                CollectionModel<EntityModel<RoomTypeResponse_Minimal>> roomTypeCollectionModel = utility.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomTypeResponse_Minimal.class, roomType, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+                CollectionModel<EntityModel<RoomType_MinimalResponse>> roomTypeCollectionModel = utility.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomType_MinimalResponse.class, roomType, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
 
                 responseInstance = (T) new UtilityResponse_Full(utility, roomResponseBases, roomTypeCollectionModel, null);
             } else {
@@ -119,7 +132,7 @@ public class ServiceHelper {
             T roomResponse;
             EntityModel<ReservationResponse> currentReservation = getCurrentReservationModel(room.getRoomReservations(), authentication).orElse(null);
             if (RoomResponse_Full.class.equals(responseType)) {
-                List<EntityModel<RoomTypeResponse_Minimal>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomTypeResponse_Minimal.class, roomType, authentication)).toList();
+                List<EntityModel<RoomType_MinimalResponse>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomType_MinimalResponse.class, roomType, authentication)).toList();
                 List<EntityModel<UtilityResponse_Minimal>> utilityResponseModels = room.getRoomUtilities().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).toList();
                 roomResponse = (T) new RoomResponse_Full(room, roomTypeResponseModels, utilityResponseModels, null, currentReservation);
             } else {
@@ -139,16 +152,16 @@ public class ServiceHelper {
                 .map(roomReservation -> makeReservationResponse(roomReservation.getReservation(), authentication));
     }
 
-    public <T extends RoomTypeResponse_Minimal> EntityModel<T> makeRoomTypeResponse(Class<T> responseType, RoomType roomType, Authentication authentication) {
+    public <T extends RoomType_MinimalResponse> EntityModel<T> makeRoomTypeResponse(Class<T> responseType, RoomType roomType, Authentication authentication) {
         if (roomType == null) return null;
 
         T roomTypeResponse;
         try {
-            if (RoomTypeResponse_Full.class.equals(responseType)) {
+            if (RoomType_FullResponse.class.equals(responseType)) {
                 CollectionModel<EntityModel<UtilityResponse_Basic>> utilityResponseModels = roomType.getRoomTypeUtilities().stream().map(utility -> makeUtilityResponse(UtilityResponse_Basic.class, utility, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
                 CollectionModel<EntityModel<RoomResponse_Basic>> roomResponseModels = roomType.getRooms().stream().map(room -> makeRoomResponse(RoomResponse_Basic.class, room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
 
-                roomTypeResponse = (T) new RoomTypeResponse_Full(roomType, utilityResponseModels, roomResponseModels);
+                roomTypeResponse = (T) new RoomType_FullResponse(roomType, utilityResponseModels, roomResponseModels);
             } else {
                 roomTypeResponse = responseType.getDeclaredConstructor(RoomType.class).newInstance(roomType);
             }

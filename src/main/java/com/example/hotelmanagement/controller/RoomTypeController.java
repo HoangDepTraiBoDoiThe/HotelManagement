@@ -1,9 +1,8 @@
 package com.example.hotelmanagement.controller;
 
 import com.example.hotelmanagement.dto.request.RoomTypeRequest;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Basic;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Full;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Minimal;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomType_BasicResponse;
+import com.example.hotelmanagement.dto.response.room.roomType.RoomType_MinimalResponse;
 import com.example.hotelmanagement.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +26,7 @@ public class RoomTypeController {
     
     @GetMapping
     public ResponseEntity<?> getRoomAllTypes(Authentication authentication) {
-        CollectionModel<EntityModel<RoomTypeResponse_Basic>> roomTypeResponses = roomTypeService.getAllRoomTypes(authentication);
+        CollectionModel<EntityModel<RoomType_BasicResponse>> roomTypeResponses = roomTypeService.getAllRoomTypes(authentication);
         return ResponseEntity.ok(roomTypeResponses);
     }
 
@@ -35,7 +34,7 @@ public class RoomTypeController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createRoomType(@RequestBody @Validated RoomTypeRequest roomTypeRequest, Authentication authentication) {
-        EntityModel<RoomTypeResponse_Minimal> roomTypeServiceRoomType = roomTypeService.createRoomType(roomTypeRequest, authentication);
+        EntityModel<RoomType_MinimalResponse> roomTypeServiceRoomType = roomTypeService.createRoomType(roomTypeRequest, authentication);
         return ResponseEntity.ok(roomTypeServiceRoomType);
     }
     

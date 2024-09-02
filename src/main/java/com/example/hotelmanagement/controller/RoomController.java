@@ -30,8 +30,8 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getRoomAllRooms(Authentication authentication) {
-        CollectionModel<EntityModel<RoomResponse_Basic>> responseEntityModels = roomService.getAllRooms(authentication);
+    public ResponseEntity<?> getRoomRooms(@RequestParam int page, Authentication authentication) {
+        CollectionModel<EntityModel<RoomResponse_Basic>> responseEntityModels = roomService.getRooms(page, authentication);
         return ResponseEntity.ok(responseEntityModels);
     }
 
