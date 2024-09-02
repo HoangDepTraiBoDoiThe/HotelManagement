@@ -19,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.naming.AuthenticationException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,12 +51,12 @@ public class ServiceHelper {
             throw new RuntimeException(exception);
         }
     }
-    
+
     public EntityModel<RoleResponse> makeRoleResponse(Role role, Authentication authentication) {
         RoleResponse roleResponse = new RoleResponse(role);
         return roleAssembler.toModel(roleResponse, authentication);
     }
-    
+
     public EntityModel<ReservationResponse> makeReservationResponse(Reservation reservation, Authentication authentication) {
         EntityModel<UserResponse_Minimal> userResponseEntityModel = null;
         try {
@@ -64,9 +66,9 @@ public class ServiceHelper {
         }
 
         List<RoomReservationResponse> bookedRoomResponses = reservation.getRoomReservation().stream().map(roomReservation -> makeRoomReservationResponse(authentication, roomReservation)).toList();
-        
+
         EntityModel<BillResponse> billResponseEntityModel = makeBillResponse(reservation.getReservationBill(), authentication);
-        
+
         ReservationResponse reservationResponse = new ReservationResponse(reservation, userResponseEntityModel, bookedRoomResponses, billResponseEntityModel);
         return reservationAssembler.toModel(reservationResponse, authentication);
     }
@@ -110,34 +112,24 @@ public class ServiceHelper {
         }
     }
 
-    public <T extends RoomResponse_Basic> T makeRoomResponseInstance(Class<T> responseType, Room room) {
+    public <T extends RoomResponse_Basic> EntityModel<T> makeRoomResponse(Class<T> responseType, Room room, Authentication authentication) {
         if (room == null) return null;
 
         try {
             T roomResponse;
-            EntityModel<ReservationResponse> currentReservation = getCurrentReservationModel(room.getRoomReservations()).orElse(null);
+            EntityModel<ReservationResponse> currentReservation = getCurrentReservationModel(room.getRoomReservations(), authentication).orElse(null);
             if (RoomResponse_Full.class.equals(responseType)) {
-                List<EntityModel<RoomTypeResponse_Minimal>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomTypeResponse_Minimal.class, roomType)).toList();
-                List<EntityModel<UtilityResponse_Minimal>> utilityResponseModels = room.getRoomUtilities().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility)).toList();
+                List<EntityModel<RoomTypeResponse_Minimal>> roomTypeResponseModels = room.getRoomTypes().stream().map(roomType -> makeRoomTypeResponse(RoomTypeResponse_Minimal.class, roomType, authentication)).toList();
+                List<EntityModel<UtilityResponse_Minimal>> utilityResponseModels = room.getRoomUtilities().stream().map(utility -> makeUtilityResponse(UtilityResponse_Minimal.class, utility, authentication)).toList();
                 roomResponse = (T) new RoomResponse_Full(room, roomTypeResponseModels, utilityResponseModels, null, currentReservation);
             } else {
                 roomResponse = responseType.getDeclaredConstructor(Room.class, CollectionModel.class, EntityModel.class).newInstance(room, null, currentReservation);
             }
-            return roomResponse;
+
+            return roomAssembler.toRoomModel(roomResponse, authentication);
         } catch (Exception exception) {
             throw new RuntimeException("Failed to create an instance of " + responseType.getName(), exception);
         }
-    }
-    public <T extends RoomResponse_Basic> EntityModel<T> makeRoomResponse_EntityModel(T roomResponse, Authentication authentication) {
-        return roomAssembler.toRoomModel(roomResponse, authentication);
-    }
-    public <T extends RoomResponse_Basic> CollectionModel<EntityModel<T>> makeRoomResponse_CollectionModel(List<T> roomResponses, Authentication authentication) {
-        return roomAssembler.toCollectionModel(roomResponses, authentication);
-    }
-    public <T extends RoomResponse_Basic> List<T> makeRoomResponseList(Class<T> responseType, List<Room> rooms) {
-        return rooms.stream()
-                .map(room -> makeRoomResponseInstance(responseType, room))
-                .collect(Collectors.toList());
     }
     private Optional<EntityModel<ReservationResponse>> getCurrentReservationModel(Set<RoomReservation> roomReservations, Authentication authentication) {
         if (roomReservations == null) return Optional.empty();
@@ -149,7 +141,7 @@ public class ServiceHelper {
 
     public <T extends RoomTypeResponse_Minimal> EntityModel<T> makeRoomTypeResponse(Class<T> responseType, RoomType roomType, Authentication authentication) {
         if (roomType == null) return null;
-        
+
         T roomTypeResponse;
         try {
             if (RoomTypeResponse_Full.class.equals(responseType)) {
@@ -159,7 +151,7 @@ public class ServiceHelper {
                 roomTypeResponse = (T) new RoomTypeResponse_Full(roomType, utilityResponseModels, roomResponseModels);
             } else {
                 roomTypeResponse = responseType.getDeclaredConstructor(RoomType.class).newInstance(roomType);
-            } 
+            }
         } catch (Exception exception) {
             throw new RuntimeException("Failed to create an instance of " + responseType.getName(), exception);
         }
