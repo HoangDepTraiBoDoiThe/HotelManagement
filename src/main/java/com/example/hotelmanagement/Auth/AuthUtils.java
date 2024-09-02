@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -18,8 +20,8 @@ import java.util.function.Function;
 public class AuthUtils {
     @Value("${auth.security.token.securityKey}")
     private String jwtKey;
-    @Value("${auth.security.token.expirationInMillis}")
-    private String expirationInMillis;
+    @Value("${auth.security.token.expirationInMinutes}")
+    private int expirationInMinutes;
     private static final Logger logger = LoggerFactory.getLogger(AuthUtils.class);
     private SecretKey getSecurityKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtKey));
@@ -49,11 +51,16 @@ public class AuthUtils {
     public String generateToken(AuthUserDetail userDetail) {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("email", userDetail.getEmail());
+        claims.put("user name", userDetail.getUsername());
+        claims.put("roles", userDetail.getAuthorities());
+        claims.put("id", userDetail.getId());
+        Instant now = Instant.now();
+        Instant expiryDate = now.plus(expirationInMinutes, ChronoUnit.MINUTES);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetail.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() * Long.parseLong(expirationInMillis) * 1000))
+                .setExpiration(Date.from(expiryDate))
                 .signWith(getSecurityKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
