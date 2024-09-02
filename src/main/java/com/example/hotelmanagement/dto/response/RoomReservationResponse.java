@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomReservationResponse extends ResponseBase{
+public class RoomReservationResponse extends BaseResponse {
     private LocalDate checkin;
     private LocalDate checkout;
     private BigDecimal totalPrice;

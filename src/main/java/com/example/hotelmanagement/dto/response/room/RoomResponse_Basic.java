@@ -1,9 +1,8 @@
 package com.example.hotelmanagement.dto.response.room;
 
 import com.example.hotelmanagement.dto.response.ReservationResponse;
-import com.example.hotelmanagement.dto.response.ResponseBase;
+import com.example.hotelmanagement.dto.response.BaseResponse;
 import com.example.hotelmanagement.dto.response.RoomImageResponse;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Minimal;
 import com.example.hotelmanagement.model.Room;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +17,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomResponse_Basic extends ResponseBase {
+public class RoomResponse_Basic extends BaseResponse {
     Number roomNumber;
     String roomStatus;
     BigDecimal roomBasePrice;

@@ -2,8 +2,6 @@ package com.example.hotelmanagement.dto.response.room;
 
 import com.example.hotelmanagement.dto.response.ReservationResponse;
 import com.example.hotelmanagement.dto.response.RoomImageResponse;
-import com.example.hotelmanagement.dto.response.room.roomType.RoomTypeResponse_Full;
-import com.example.hotelmanagement.dto.response.roomUtility.UtilityResponse_Minimal;
 import com.example.hotelmanagement.model.Room;
 import lombok.AllArgsConstructor;
 import lombok.Data;

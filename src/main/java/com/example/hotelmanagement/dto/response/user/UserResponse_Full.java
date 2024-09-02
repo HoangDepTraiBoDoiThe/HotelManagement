@@ -1,7 +1,6 @@
 package com.example.hotelmanagement.dto.response.user;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
-import com.example.hotelmanagement.dto.response.ResponseBase;
 import com.example.hotelmanagement.model.Role;
 import com.example.hotelmanagement.model.User;
 import lombok.AllArgsConstructor;

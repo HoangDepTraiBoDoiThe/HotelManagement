@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BillResponse extends ResponseBase {
+public class BillResponse extends BaseResponse {
     private LocalDate date;
     private EntityModel<?> reservation;
 

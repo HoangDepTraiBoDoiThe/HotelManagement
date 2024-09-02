@@ -1,12 +1,10 @@
 package com.example.hotelmanagement.dto.response.room.roomType;
 
-import com.example.hotelmanagement.dto.response.ResponseBase;
 import com.example.hotelmanagement.model.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
 
 import java.math.BigDecimal;
 
@@ -14,12 +12,12 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomTypeResponse_Basic extends RoomTypeResponse_Minimal {
+public class RoomType_BasicResponse extends RoomType_MinimalResponse {
     String description;
     BigDecimal basePrice;
     Number roomCapability;
 
-    public RoomTypeResponse_Basic(RoomType roomType) {
+    public RoomType_BasicResponse(RoomType roomType) {
         super(roomType);
         this.description = roomType.getDescription();
         this.basePrice = roomType.getBasePrice();

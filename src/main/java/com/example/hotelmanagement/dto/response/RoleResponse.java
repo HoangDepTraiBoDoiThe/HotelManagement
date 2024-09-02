@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class RoleResponse extends ResponseBase{
+public class RoleResponse extends BaseResponse {
 
     private String roleName;
     public RoleResponse(String roleName) {

@@ -5,18 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationResponse extends ResponseBase{
+public class ReservationResponse extends BaseResponse {
     EntityModel<?> owner;
     EntityModel<?> bill;
     List<RoomReservationResponse> rookedRooms;
