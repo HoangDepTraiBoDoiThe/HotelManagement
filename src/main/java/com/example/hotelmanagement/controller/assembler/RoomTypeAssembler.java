@@ -2,7 +2,7 @@ package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.controller.RoomTypeController;
-import com.example.hotelmanagement.dto.response.ResponseBase;
+import com.example.hotelmanagement.dto.response.BaseResponse;
 import com.example.hotelmanagement.helper.StaticHelper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -16,7 +16,7 @@ import java.util.stream.StreamSupport;
 
 @Component
 public class RoomTypeAssembler {
-    public <T extends ResponseBase> EntityModel<T> toModel(T entity, Authentication authentication) {
+    public <T extends BaseResponse> EntityModel<T> toModel(T entity, Authentication authentication) {
         Set<String> roles = StaticHelper.extractAllRoles(authentication);
         EntityModel<T> entityModel = EntityModel.of(entity,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomTypeController.class).getRoomTypeById(entity.getId(), authentication)).withSelfRel().withType("GET"),
@@ -33,7 +33,7 @@ public class RoomTypeAssembler {
         return entityModel;
     }
 
-    public <T extends ResponseBase> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
+    public <T extends BaseResponse> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
         return StreamSupport.stream(entities.spliterator(), false) //
                 .map(t -> toModel(t, authentication)) //
                 .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));

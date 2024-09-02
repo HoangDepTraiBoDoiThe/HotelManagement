@@ -3,7 +3,7 @@ package com.example.hotelmanagement.controller.assembler;
 import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.controller.AuthController;
 import com.example.hotelmanagement.controller.UserController;
-import com.example.hotelmanagement.dto.response.ResponseBase;
+import com.example.hotelmanagement.dto.response.BaseResponse;
 import com.example.hotelmanagement.helper.StaticHelper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 
 @Component
 public class UserAssembler {
-    public <T extends ResponseBase> EntityModel<T> toModel(T entity, Authentication authentication) throws AuthenticationException {
+    public <T extends BaseResponse> EntityModel<T> toModel(T entity, Authentication authentication) throws AuthenticationException {
         Set<String> roles = StaticHelper.extractAllRoles(authentication);
         
         EntityModel<T> entityModel = EntityModel.of(entity, 
@@ -38,7 +38,7 @@ public class UserAssembler {
         return entityModel;
     }
 
-    public <T extends ResponseBase> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
+    public <T extends BaseResponse> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
         return StreamSupport.stream(entities.spliterator(), false) //
                 .map(t -> {
                     try {

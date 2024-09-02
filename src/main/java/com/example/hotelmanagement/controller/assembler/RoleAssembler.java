@@ -2,12 +2,10 @@ package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.controller.RoleController;
-import com.example.hotelmanagement.dto.response.ResponseBase;
-import com.example.hotelmanagement.dto.response.RoleResponse;
+import com.example.hotelmanagement.dto.response.BaseResponse;
 import com.example.hotelmanagement.helper.StaticHelper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ import java.util.stream.StreamSupport;
 @Component
 public class RoleAssembler{
 
-    public <T extends ResponseBase> EntityModel<T> toModel(T entity, Authentication authentication) {
+    public <T extends BaseResponse> EntityModel<T> toModel(T entity, Authentication authentication) {
         Set<String> roles = StaticHelper.extractAllRoles(authentication);
         EntityModel<T> roleEntityModel = EntityModel.of(entity,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoleController.class).getRole(entity.getId(), authentication)).withSelfRel().withType("GET"),
@@ -37,7 +35,7 @@ public class RoleAssembler{
         return roleEntityModel;
     }
 
-    public <T extends ResponseBase> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
+    public <T extends BaseResponse> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> entities, Authentication authentication) {
 
         return StreamSupport.stream(entities.spliterator(), false) //
                 .map(t -> toModel(t, authentication)) //

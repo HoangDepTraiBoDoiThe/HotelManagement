@@ -2,7 +2,7 @@ package com.example.hotelmanagement.controller.assembler;
 
 import com.example.hotelmanagement.constants.ApplicationRole;
 import com.example.hotelmanagement.controller.RoomController;
-import com.example.hotelmanagement.dto.response.ResponseBase;
+import com.example.hotelmanagement.dto.response.BaseResponse;
 import com.example.hotelmanagement.helper.StaticHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -18,12 +18,12 @@ import java.util.stream.StreamSupport;
 @Component
 @RequiredArgsConstructor
 public class RoomAssembler {
-    public <T extends ResponseBase> EntityModel<T> toRoomModel(T responseDto, Authentication authentication) {
+    public <T extends BaseResponse> EntityModel<T> toRoomModel(T responseDto, Authentication authentication) {
         Set<String> roles = StaticHelper.extractAllRoles(authentication);
 
         EntityModel<T> entityModel = EntityModel.of(responseDto,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomById(responseDto.getId(), null)).withSelfRel().withType("GET"),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomAllRooms(null)).withRel("Get all room").withType("GET")
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomRooms(0, null)).withRel("Get all room").withType("GET")
                 );
 
         if (roles.contains(ApplicationRole.ADMIN.name()) || roles.contains(ApplicationRole.MANAGER.name())) {
@@ -37,10 +37,10 @@ public class RoomAssembler {
         return entityModel;
     }
 
-    public <T extends ResponseBase> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> responseDtos, Authentication authentication) {
+    public <T extends BaseResponse> CollectionModel<EntityModel<T>> toCollectionModel(Iterable<T> responseDtos, Authentication authentication) {
         return StreamSupport.stream(responseDtos.spliterator(), false) //
                 .map(t -> toRoomModel(t, authentication)) //
                 .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of))
-                .add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomAllRooms(authentication)).withSelfRel().withType("GET"));
+                .add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RoomController.class).getRoomRooms(0, authentication)).withSelfRel().withType("GET"));
     }
 }
