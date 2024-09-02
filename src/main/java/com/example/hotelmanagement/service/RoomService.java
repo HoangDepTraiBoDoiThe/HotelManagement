@@ -31,14 +31,14 @@ public class RoomService {
 
     public CollectionModel<EntityModel<RoomResponse_Basic>> getAllRooms(Authentication authentication) {
         List<Room> rooms = roomRepository.findAll();
-        CollectionModel<EntityModel<RoomResponse_Basic>> entityModelCollectionModels = rooms.stream().map(room -> serviceHelper.makeRoomResponse(RoomResponse_Basic.class, room, authentication)).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
-        
-        return entityModelCollectionModels;
+        List<RoomResponse_Basic> responses = serviceHelper.makeRoomResponseList(RoomResponse_Basic.class, rooms);
+        return serviceHelper.makeRoomResponse_CollectionModel(responses, authentication);
     }
 
     public EntityModel<RoomResponse_Full> getRoomById(Long id, Authentication authentication) {
         Room room = roomRepository.findAllWithReservations(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Can not find any room with this room id [%d]", id)));
-        return serviceHelper.makeRoomResponse(RoomResponse_Full.class, room, authentication);
+        RoomResponse_Full response = serviceHelper.makeRoomResponseInstance(RoomResponse_Full.class, room);
+        return serviceHelper.makeRoomResponse_EntityModel(response, authentication);
     }
     
     public Room getRoomById_entity(Long id, Authentication authentication, boolean shouldThrowIfNull) {
@@ -56,7 +56,8 @@ public class RoomService {
         newRoom.setRoomUtilities(utilities);
         Room newCreatedRoom = roomRepository.save(newRoom);
 
-        return serviceHelper.makeRoomResponse(RoomResponse_Full.class, newCreatedRoom, authentication);
+        RoomResponse_Full response = serviceHelper.makeRoomResponseInstance(RoomResponse_Full.class, newCreatedRoom);
+        return serviceHelper.makeRoomResponse_EntityModel(response, authentication);
     }
 
     @Transactional
@@ -69,9 +70,9 @@ public class RoomService {
         Set<RoomType> roomTypes = roomRequest.roomTypeIds().stream().map(aLong -> roomTypeService.getRoomTypeById_entity(aLong, authentication)).collect(Collectors.toSet());
         room.setRoomTypes(roomTypes);
         Room updatedRoom = roomRepository.save(room);
-        
-        return serviceHelper.makeRoomResponse(RoomResponse_Full.class, updatedRoom, authentication);
-    }
+
+        RoomResponse_Full response = serviceHelper.makeRoomResponseInstance(RoomResponse_Full.class, updatedRoom);
+        return serviceHelper.makeRoomResponse_EntityModel(response, authentication);    }
 
     public void deleteRoomType(Long id) {
         roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
